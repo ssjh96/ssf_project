@@ -7,5 +7,5 @@ public class Constant {
     public static final String template02 = "template02";
 
     // Create key for redis repo
-    public static final String jokeKey = "jokes";
+    public static final String exampleKey = "example";
 }

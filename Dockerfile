@@ -33,7 +33,7 @@ WORKDIR ${DEPLOY_DIR}
 COPY --from=compiler /code_folder/target/ssf_project_potluck_shamus-0.0.1-SNAPSHOT.jar potluck.jar
 
 ENV SERVER_PORT=3000
-# ENV CURRENCY_API_KEY=xyz789
+# ENV MEALDB_API_KEY=xyz789
 EXPOSE ${SERVER_PORT}
 
 ENTRYPOINT ["java", "-jar", "day17ws.jar"]
