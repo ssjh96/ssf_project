@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
-public class UserModel {
+public class User {
 
     // VALIDATIONS
     // Non-validation Attributes
@@ -29,14 +29,14 @@ public class UserModel {
 
     // CONSTRUCTORS
     // Default Constructor for User object
-    public UserModel() 
+    public User() 
     {
         this.id = UUID.randomUUID().toString().replace("-", "").substring(0,  4);
         this.role = "default_role";
     }
     
     // Constructor for new User object
-    public UserModel(String email, String username, String password) 
+    public User(String email, String username, String password) 
     {
         this.id = UUID.randomUUID().toString().replace("-", "").substring(0,  4);
         this.role = "default_role";
@@ -47,7 +47,7 @@ public class UserModel {
     }
 
     // Constructor for updating or rebuilding User object from data stored in Redis DB
-    public UserModel(String id, String role, String email, String username, String password) 
+    public User(String id, String role, String email, String username, String password) 
     {
         this.id = id;
         this.role = role;
