@@ -10,15 +10,15 @@
 <body>
     <h1>Registration Page</h1>
 
-    <div th:if="${error}" class="alert alert-danger">
-        <p th:text="${error}"></p>
+    <div th:if="${errorMsg}" class="alert alert-danger">
+        <p th:text="${errorMsg}"></p>
     </div>
     
-    <form method="POST" th:action="@{users/registration}" th:object="${user}">
+    <form method="post" th:action="@{/users/registration}" th:object="${user}">
 
         <div class="mb-3">
             <label class="form-labal">Email:</label>
-            <input type="email" class="form-control" name="email" th:field="*{email}"  placeholder="Enter email" />
+            <input type="text" class="form-control" name="email" th:field="*{email}"  placeholder="Enter email" />
             <p class = "text-danger" data-th-if="${#fields.hasErrors('email')}" data-th-errors = "*{email}">
             </p>
             </div>
@@ -37,7 +37,7 @@
                 </p>
             </div>
             
-            <button type="submit">Register</button>
+            <button type="submit" class="btn btn-primary">Register</button>
     </form>
 
     <a href="/users/login">Login Page</a>

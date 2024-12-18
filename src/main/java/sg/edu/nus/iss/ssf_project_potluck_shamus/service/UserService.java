@@ -1,9 +1,17 @@
 package sg.edu.nus.iss.ssf_project_potluck_shamus.service;
 
+import java.io.StringReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.constant.Constant;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.model.User;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.repository.MapRepo;
@@ -17,47 +25,74 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // storing in memory
-    // private static List<UserModel> users = new ArrayList<>();
+    String redisKey = Constant.usersKey;
 
-    public void register(User user)
-    {
-        String redisKey = Constant.usersKey + ":" + user.getUsername();
-        
-        mapRepo.put(redisKey, "id", user.getId());
-        mapRepo.put(redisKey, "role", user.getRole());
-        mapRepo.put(redisKey, "email", user.getEmail());
-        mapRepo.put(redisKey, "username", user.getUsername());
-
-        String hashedPw = passwordEncoder.encode(user.getPassword());
-        mapRepo.put(redisKey, "password", hashedPw);
+    private String serialiseUser(User user) {
+        return Json.createObjectBuilder()
+                .add("id", user.getId())
+                .add("role", user.getRole())
+                .add("email", user.getEmail())
+                .add("username", user.getUsername())
+                .add("password", passwordEncoder.encode(user.getPassword()))
+                .build()
+                .toString();
     }
-    
-    // Find user by username (For logging in)
-    public User findUsername(String usernameKey)
+
+    private User deserialiseUser(String userJson) throws ParseException
     {
-        String redisKey = Constant.usersKey + ":" + usernameKey;
+        JsonReader reader = Json.createReader(new StringReader(userJson));
+        JsonObject jsonObject = reader.readObject();
 
-        String username = mapRepo.get(redisKey, "username").toString();
+        // SimpleDateFormat sdf = new SimpleDateFormat("EEE, MM/dd/yyyy");
 
-        if (username == null) // if username does not exist
+        return new User(
+                jsonObject.getString("id"),
+                jsonObject.getString("role"),
+                jsonObject.getString("email"),
+                jsonObject.getString("username"),
+                jsonObject.getString("password")
+        );
+    }
+
+
+    public Boolean register(User user)
+    {
+        String fieldKey = redisKey + ":" + user.getUsername();
+        
+        // username exist, return register as false
+        if (mapRepo.hasField(redisKey, fieldKey)) 
         {
-            return null;
+            return false;
         }
 
-        String id = mapRepo.get(redisKey, "id").toString();
-        String role = mapRepo.get(redisKey, "role").toString();
-        String email = mapRepo.get(redisKey, "email").toString();
-        String password = mapRepo.get(redisKey, "password").toString();
-        
-        User user = new User(id, role, email, username, password);
+        // username don't exist, register into reids
+        mapRepo.put(redisKey, fieldKey, serialiseUser(user)); 
 
-        return user;
+        return true;
+    }
+
+    public String suggestUsername(User user)
+    {
+        Random rand = new Random();
+        String suggestion = "";
+
+        do
+        {   
+            // suggest new name with 3 numbers behind
+            suggestion = user.getUsername() + rand.nextInt(100,1000);
+        }
+        // Check if the suggestion exist in redis
+        while (mapRepo.hasField(redisKey, redisKey + ":" + suggestion));
+
+        return suggestion;
+        
     }
 
     public Boolean authenticate(String inputPassword, User user)
     {     
-        // check if user input passsword when encoded, matches the hashedPw set on creation
+        // check if user input passsword when encoded, matches the encoded pw stored in redis
         return passwordEncoder.matches(inputPassword, user.getPassword()); 
     }
+
+    
 }

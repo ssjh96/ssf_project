@@ -10,8 +10,12 @@
 <body>
     <h1>Login Page</h1>
 
-    <div th:if="${error}" class="alert alert-danger">
-        <p th:text="${error}"></p>
+    <div th:if="${errorMsg}" class="alert alert-danger">
+        <p th:text="${errorMsg}"></p>
+    </div>
+
+    <div th:if="${registeredMsg}" class="alert alert-success">
+        <p th:text="${registeredMsg}"></p>
     </div>
 
     <form method="post" th:action="@{/users/login}" th:object="${user}">

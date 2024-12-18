@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 public class User {
@@ -15,7 +14,7 @@ public class User {
     private String role;
     
     // Validated Attributes
-    @NotEmpty(message = "Email field must not be empty.")
+    @NotBlank(message = "Email field must not be blank.")
     @Email(message = "Please enter a valid email.")
     private String email;
 

@@ -1,5 +1,7 @@
 package sg.edu.nus.iss.ssf_project_potluck_shamus.controller;
 
+import java.text.ParseException;
+import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,42 +30,59 @@ public class UserController
     @Autowired
     private UserService userService;
 
+    Random rand = new Random();
+
     // LOGIN
     @GetMapping("/login")
-    public String displayLogin(Model model) 
+    public String displayLogin(@RequestParam(value = "error", required = false) String error, 
+    @RequestParam (value = "registered", required = false) String registered, Model model) 
     {
         model.addAttribute("user", new User());
+
+        if (error != null)
+        {
+            model.addAttribute("errorMsg", "Invalid username of password. Please try again.");
+        }
+
+        if (registered != null)
+        {
+            model.addAttribute("registeredMsg", "Registration successful. Please login.");
+        }
 
         return "login";
     }
 
-    @PostMapping("/login")
-    public String handleLogin(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, HttpSession httpSession, Model model) 
-    {
-         if (bindingResult.hasErrors())
-        {
-            return "login"; // Return login form with errors
-        }
+    // @PostMapping("/login")
+    // public String handleLogin(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, HttpSession httpSession, Model model) 
+    // {
+    //      if (bindingResult.hasErrors())
+    //     {
+    //         return "login"; // Return login form with errors
+    //     }
 
-        String username = user.getUsername();
-        String inputPassword = user.getPassword();
+    //     String username = user.getUsername();
+    //     String inputPassword = user.getPassword();
 
-        User currentUser = userService.findUsername(username);
-        System.out.println("User is >>>" + currentUser);
+    //     // Check user exist
+    //     String existingUsername  = userService.findUser(username);
 
-        // Check if username does not exist or password is wrong
-        if (currentUser == null || !userService.authenticate(inputPassword, currentUser)) 
-        {
-            model.addAttribute("error", "Invalid username or password. Please try again.");
-
-            return "login"; // Return login form with errors
-        }
+    //     if (existingUsername != null)
         
-        httpSession.setAttribute("currentUser", currentUser);
-        model.addAttribute("username", username);
+    //     System.out.println("User is >>>" + currentUser);
 
-        return "redirect:/success";
-    }
+    //     // Check if username does not exist or password is wrong
+    //     if (currentUser == null || !userService.authenticate(inputPassword, currentUser)) 
+    //     {
+    //         model.addAttribute("errorMsg", "Invalid username or password. Please try again.");
+
+    //         return "login"; // Return login form with errors
+    //     }
+        
+    //     httpSession.setAttribute("currentUser", currentUser);
+    //     model.addAttribute("username", username);
+
+    //     return "redirect:/home";
+    // }
 
     
 
@@ -71,34 +90,27 @@ public class UserController
     @GetMapping("/registration")
     public String displayRegistration(Model model) 
     {
-        model.addAttribute("user", new User());
-
+        model.addAttribute("user", new User()); // Bind new User object to registration form
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String handleRegistration(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model) 
+    public String handleRegistration(@Valid @ModelAttribute("user") User user, 
+                                    BindingResult bindingResult, 
+                                    Model model) throws ParseException 
     {
          if (bindingResult.hasErrors())
         {
             return "registration"; // Return registration form with errors
         }
-
-        String username = user.getUsername();
-        User newUser = userService.findUsername(username);
-
-        // Check if username exist
-        if (newUser != null)
+       
+        if (!userService.register(user)) // if username exist, register method returns false
         {
-            model.addAttribute("error", "Username already exist. You may try " + username + UUID.randomUUID().toString().replace("-", "").substring(0, 4));
-
+            model.addAttribute("errorMsg", "Username is already taken, You may consider: " + userService.suggestUsername(user));
             return "registration";
         }
 
-        userService.register(newUser);
-        System.out.println("user registered >>>" + newUser);
-
-        return "redirect:/users/login";
+        return "redirect:/users/login?registered";
     }
 
     

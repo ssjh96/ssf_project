@@ -15,9 +15,9 @@ public class MainController {
         return "main";
     }
 
-    @GetMapping("/sucess")
+    @GetMapping("/home")
     public String success() {
-        return "success";
+        return "home";
     }
     
     
