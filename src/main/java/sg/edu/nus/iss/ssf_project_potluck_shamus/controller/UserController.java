@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -99,19 +100,41 @@ public class UserController
                                     BindingResult bindingResult, 
                                     Model model) throws ParseException 
     {
+
+        // if username already registered
+        if (userService.usernameRegistered(user))
+        {
+            ObjectError error = new ObjectError("globalError", "Username is already taken, You may consider: %s".formatted(userService.suggestUsername(user)));
+            bindingResult.addError(error);
+            // model.addAttribute("errorUser", "Username is already taken, You may consider: " + userService.suggestUsername(user));
+            // return "registration";
+        }
+
+        // if email already registered
+        if (userService.emailRegistered(user))
+        {
+            ObjectError error = new ObjectError("globalError", "Email is already taken, please use another.");
+            bindingResult.addError(error);
+            // model.addAttribute("errorEmail", "Email is already taken, please use another.");
+            // return "registration";
+        }
+
          if (bindingResult.hasErrors())
         {
             return "registration"; // Return registration form with errors
         }
-       
-        if (!userService.register(user)) // if username exist, register method returns false
-        {
-            model.addAttribute("errorMsg", "Username is already taken, You may consider: " + userService.suggestUsername(user));
-            return "registration";
-        }
+        
+        userService.register(user);
 
         return "redirect:/users/login?registered";
     }
 
+    // @GetMapping("/test")
+    // public String test() throws ParseException {
+
+    //     userService.emailRegistered();
+    //     return "index";
+    // }
+    
     
 }

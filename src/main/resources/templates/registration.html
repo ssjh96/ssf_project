@@ -10,9 +10,12 @@
 <body>
     <h1>Registration Page</h1>
 
-    <div th:if="${errorMsg}" class="alert alert-danger">
-        <p th:text="${errorMsg}"></p>
+    <!-- <div th:if="${errorUser}" class="alert alert-danger">
+        <p th:text="${errorUser}"></p>
     </div>
+    <div th:if="${errorEmail}" class="alert alert-danger">
+        <p th:text="${errorEmail}"></p>
+    </div> -->
     
     <form method="post" th:action="@{/users/registration}" th:object="${user}">
 
@@ -21,23 +24,28 @@
             <input type="text" class="form-control" name="email" th:field="*{email}"  placeholder="Enter email" />
             <p class = "text-danger" data-th-if="${#fields.hasErrors('email')}" data-th-errors = "*{email}">
             </p>
-            </div>
+        </div>
 
-            <div class="mb-3">
+        <div class="mb-3">
             <label class="form-labal">Username:</label>
             <input type="text" class="form-control" name="username" th:field="*{username}"  placeholder="Enter username" />
             <p class = "text-danger" data-th-if="${#fields.hasErrors('username')}" data-th-errors = "*{username}">
             </p>
-            </div>
+        </div>
 
-            <div class="mb-3">
-                <label class="form-labal">Password:</label>
-                <input type="password" class="form-control" name="password" th:field="*{password}"  placeholder="Enter Password" />
-                <p class = "text-danger" data-th-if="${#fields.hasErrors('password')}" data-th-errors = "*{password}">
-                </p>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">Register</button>
+        <div class="mb-3">
+            <label class="form-labal">Password:</label>
+            <input type="password" class="form-control" name="password" th:field="*{password}"  placeholder="Enter Password" />
+            <p class = "text-danger" data-th-if="${#fields.hasErrors('password')}" data-th-errors = "*{password}">
+            </p>
+        </div>
+
+        <!-- Display global errors -->
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p class="text-danger" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
     </form>
 
     <a href="/users/login">Login Page</a>
