@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class User {
@@ -23,7 +24,8 @@ public class User {
     private String username;
     
     @NotBlank(message = "Password must not be blank.")
-    @Size(min = 6, max = 32, message = "Password must be 6-32 characters long.")
+    // @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,20}$", message = "Password must be 8-20 characters containing uppercase(s), lowercase(s), number(s), and special character(s).")
+    @Size(min = 8, message = "Password must be at least 8 characters long.")
     private String password;
 
     // CONSTRUCTORS
