@@ -15,7 +15,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.constant.Constant;
-import sg.edu.nus.iss.ssf_project_potluck_shamus.model.User;
+import sg.edu.nus.iss.ssf_project_potluck_shamus.model.UserModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.repository.MapRepo;
 
 @Service
@@ -30,8 +30,8 @@ public class UserService {
     String redisKey = Constant.usersKey;
 
 
-    
-    private String serialiseUser(User user) {
+
+    private String serialiseUser(UserModel user) {
         return Json.createObjectBuilder()
                 .add("id", user.getId())
                 .add("role", user.getRole())
@@ -44,14 +44,14 @@ public class UserService {
 
 
 
-    private User deserialiseUser(String userJsonString) throws ParseException
+    private UserModel deserialiseUser(String userJsonString) throws ParseException
     {
         JsonReader reader = Json.createReader(new StringReader(userJsonString));
         JsonObject jsonObject = reader.readObject();
 
         // SimpleDateFormat sdf = new SimpleDateFormat("EEE, MM/dd/yyyy");
 
-        return new User(
+        return new UserModel(
                 jsonObject.getString("id"),
                 jsonObject.getString("role"),
                 jsonObject.getString("email"),
@@ -61,8 +61,25 @@ public class UserService {
     }
 
 
+    
+    // Given a username, retrieve the user model object
+    public UserModel findUser (String username) throws ParseException
+    {
+        Object userObject = mapRepo.get(redisKey, redisKey + ":" + username);
 
-    public Boolean emailRegistered(User user) throws ParseException
+        if (userObject == null)
+        {
+            return null;
+        }
+
+        UserModel user = deserialiseUser(userObject.toString());
+        
+        return user;
+    }
+
+
+
+    public Boolean emailRegistered(UserModel user) throws ParseException
     {
         // Get all users in redis, (k,v) pairs
         Map<Object, Object> allUsers = mapRepo.getAll(redisKey);
@@ -85,7 +102,7 @@ public class UserService {
 
 
 
-    public Boolean usernameRegistered(User user) throws ParseException
+    public Boolean usernameRegistered(UserModel user) throws ParseException
     {
         String fieldKey = redisKey + ":" + user.getUsername(); 
 
@@ -113,13 +130,13 @@ public class UserService {
     
 
 
-    public void register(User user) throws ParseException
+    public void register(UserModel user) throws ParseException
     {
         String fieldKey = redisKey + ":" + user.getUsername();
         mapRepo.put(redisKey, fieldKey, serialiseUser(user)); 
     }
 
-    public String suggestUsername(User user)
+    public String suggestUsername(UserModel user)
     {
         Random rand = new Random();
         String suggestion = "";
@@ -136,11 +153,11 @@ public class UserService {
         
     }
 
-    public Boolean authenticate(String inputPassword, User user)
-    {     
-        // check if user input passsword when encoded, matches the encoded pw stored in redis
-        return passwordEncoder.matches(inputPassword, user.getPassword()); 
-    }
+    // public Boolean authenticate(String inputPassword, UserModel user)
+    // {     
+    //     // check if user input passsword when encoded, matches the encoded pw stored in redis
+    //     return passwordEncoder.matches(inputPassword, user.getPassword()); 
+    // }
 
     
 }

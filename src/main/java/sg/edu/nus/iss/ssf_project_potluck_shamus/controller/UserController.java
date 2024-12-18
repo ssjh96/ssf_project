@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import sg.edu.nus.iss.ssf_project_potluck_shamus.model.User;
+import sg.edu.nus.iss.ssf_project_potluck_shamus.model.UserModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.service.UserService;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,9 +36,10 @@ public class UserController
     // LOGIN
     @GetMapping("/login")
     public String displayLogin(@RequestParam(value = "error", required = false) String error, 
-    @RequestParam (value = "registered", required = false) String registered, Model model) 
+                                @RequestParam (value = "registered", required = false) String registered, 
+                                Model model) 
     {
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new UserModel());
 
         if (error != null)
         {
@@ -91,12 +92,12 @@ public class UserController
     @GetMapping("/registration")
     public String displayRegistration(Model model) 
     {
-        model.addAttribute("user", new User()); // Bind new User object to registration form
+        model.addAttribute("user", new UserModel()); // Bind new User object to registration form
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String handleRegistration(@Valid @ModelAttribute("user") User user, 
+    public String handleRegistration(@Valid @ModelAttribute("user") UserModel user, 
                                     BindingResult bindingResult, 
                                     Model model) throws ParseException 
     {
