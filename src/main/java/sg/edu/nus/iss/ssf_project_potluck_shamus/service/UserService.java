@@ -2,7 +2,6 @@ package sg.edu.nus.iss.ssf_project_potluck_shamus.service;
 
 import java.io.StringReader;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
@@ -28,6 +28,23 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     String redisKey = Constant.usersKey;
+
+
+
+    // Creates the admin
+    @PostConstruct // works everything after bean created
+    public void postConstruct()
+    {
+        UserModel admin = new UserModel();
+        admin.setId("0");
+        admin.setRole("ADMIN");
+        admin.setEmail("admin@potluck.com");
+        admin.setUsername("admin");
+        admin.setPassword("password");
+
+        String fieldKey = redisKey + ":" + admin.getUsername();
+        mapRepo.put(redisKey, fieldKey, serialiseUser(admin));
+    }
 
 
 
@@ -65,7 +82,9 @@ public class UserService {
     // Given a username, retrieve the user model object
     public UserModel findUser (String username) throws ParseException
     {
-        Object userObject = mapRepo.get(redisKey, redisKey + ":" + username);
+        String fieldKey = redisKey + ":" + username;
+
+        Object userObject = mapRepo.get(redisKey, fieldKey);
 
         if (userObject == null)
         {
@@ -153,11 +172,11 @@ public class UserService {
         
     }
 
-    // public Boolean authenticate(String inputPassword, UserModel user)
-    // {     
-    //     // check if user input passsword when encoded, matches the encoded pw stored in redis
-    //     return passwordEncoder.matches(inputPassword, user.getPassword()); 
-    // }
+    public Boolean authenticate(String inputPassword, UserModel user)
+    {     
+        // check if user input passsword when encoded, matches the encoded pw stored in redis
+        return passwordEncoder.matches(inputPassword, user.getPassword()); 
+    }
 
     
 }

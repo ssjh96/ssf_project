@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService{
 
             if(currentUser == null)
             {
-                return null;
+                throw new UsernameNotFoundException("Username not found: " + username);
             }
 
             return User.builder()
@@ -44,7 +44,6 @@ public class CustomUserDetailsService implements UserDetailsService{
             return null;
         }
 
-        
         
         
         // // TODO Auto-generated method stub

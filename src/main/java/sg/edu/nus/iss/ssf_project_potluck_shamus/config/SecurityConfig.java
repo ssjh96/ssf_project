@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
 import sg.edu.nus.iss.ssf_project_potluck_shamus.service.CustomUserDetailsService;
 
 @Configuration
@@ -64,6 +63,7 @@ public class SecurityConfig {
         AuthenticationManagerBuilder amb = http.getSharedObject(AuthenticationManagerBuilder.class);
         // Get authentication manager builder to build with (1) customUserDetailsService, & (2) BCryptPasswordEncoder
         amb.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder()); 
+        
         
         return amb.build();
     }

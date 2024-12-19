@@ -2,8 +2,6 @@ package sg.edu.nus.iss.ssf_project_potluck_shamus.controller;
 
 import java.text.ParseException;
 import java.util.Random;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,35 +53,44 @@ public class UserController
     }
 
     // @PostMapping("/login")
-    // public String handleLogin(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, HttpSession httpSession, Model model) 
+    // public String handleLogin(@Valid @ModelAttribute("user") UserModel user, BindingResult bindingResult, HttpSession httpSession, Model model) throws ParseException 
     // {
     //      if (bindingResult.hasErrors())
     //     {
     //         return "login"; // Return login form with errors
     //     }
 
-    //     String username = user.getUsername();
+    //     // inputs
+    //     String inputUsername = user.getUsername();
     //     String inputPassword = user.getPassword();
 
     //     // Check user exist
-    //     String existingUsername  = userService.findUser(username);
+    //     UserModel existingUser  = userService.findUser(inputUsername);
+    //     String existingUsername = existingUser.getUsername();
 
-    //     if (existingUsername != null)
-        
-    //     System.out.println("User is >>>" + currentUser);
-
-    //     // Check if username does not exist or password is wrong
-    //     if (currentUser == null || !userService.authenticate(inputPassword, currentUser)) 
+    //     if (existingUsername == null)
     //     {
     //         model.addAttribute("errorMsg", "Invalid username or password. Please try again.");
 
     //         return "login"; // Return login form with errors
     //     }
-        
-    //     httpSession.setAttribute("currentUser", currentUser);
-    //     model.addAttribute("username", username);
 
-    //     return "redirect:/home";
+    //     if (existingUsername != null)
+    //     {
+    //         System.out.println("User is >>>" + existingUsername);
+
+    //         if (!userService.authenticate(inputPassword, existingUser))
+    //         {
+    //             model.addAttribute("errorMsg", "Invalid username or password. Please try again.");
+
+    //             return "login"; // Return login form with errors
+    //         }
+
+    //         httpSession.setAttribute("currentUser", existingUser);
+    //         model.addAttribute("username", existingUsername);
+    //     }
+
+    //     return "redirect:/home";  
     // }
 
     
