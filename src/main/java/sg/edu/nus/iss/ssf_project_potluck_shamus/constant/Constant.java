@@ -8,4 +8,5 @@ public class Constant {
 
     // Create key for redis repo
     public static final String usersKey = "users";
+    public static final String eventsKey = "events";
 }

@@ -48,7 +48,8 @@ public class UserService {
 
 
 
-    private String serialiseUser(UserModel user) {
+    private String serialiseUser(UserModel user) 
+    {
         return Json.createObjectBuilder()
                 .add("id", user.getId())
                 .add("role", user.getRole())
@@ -68,13 +69,11 @@ public class UserService {
 
         // SimpleDateFormat sdf = new SimpleDateFormat("EEE, MM/dd/yyyy");
 
-        return new UserModel(
-                jsonObject.getString("id"),
-                jsonObject.getString("role"),
-                jsonObject.getString("email"),
-                jsonObject.getString("username"),
-                jsonObject.getString("password")
-        );
+        return new UserModel(jsonObject.getString("id"),
+                            jsonObject.getString("role"),
+                            jsonObject.getString("email"),
+                            jsonObject.getString("username"),
+                            jsonObject.getString("password"));
     }
 
 
