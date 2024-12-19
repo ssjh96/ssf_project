@@ -17,7 +17,6 @@ import sg.edu.nus.iss.ssf_project_potluck_shamus.service.UserService;
 
 import org.springframework.web.bind.annotation.RequestParam;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 

@@ -3,6 +3,8 @@ package sg.edu.nus.iss.ssf_project_potluck_shamus.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -57,14 +59,23 @@ public class SecurityConfig {
         return new CustomUserDetailsService();
     }
     
-    @Bean 
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception
-    {
-        AuthenticationManagerBuilder amb = http.getSharedObject(AuthenticationManagerBuilder.class);
-        // Get authentication manager builder to build with (1) customUserDetailsService, & (2) BCryptPasswordEncoder
-        amb.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder()); 
+    // @Bean 
+    // public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception
+    // {
+    //     AuthenticationManagerBuilder amb = http.getSharedObject(AuthenticationManagerBuilder.class);
+    //     // Get authentication manager builder to build with (1) customUserDetailsService, & (2) BCryptPasswordEncoder
+    //     amb.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder()); 
         
         
-        return amb.build();
-    }
+    //     return amb.build();
+    // }
+
+    @Bean
+	public AuthenticationManager authenticationManager() {
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		authenticationProvider.setUserDetailsService(userDetailsService());
+		authenticationProvider.setPasswordEncoder(passwordEncoder());
+
+		return new ProviderManager(authenticationProvider);
+	}
 }

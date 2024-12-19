@@ -9,13 +9,6 @@
 </head>
 <body>
     <h1>Registration Page</h1>
-
-    <!-- <div th:if="${errorUser}" class="alert alert-danger">
-        <p th:text="${errorUser}"></p>
-    </div>
-    <div th:if="${errorEmail}" class="alert alert-danger">
-        <p th:text="${errorEmail}"></p>
-    </div> -->
     
     <form method="post" th:action="@{/users/registration}" th:object="${user}">
 

@@ -25,26 +25,24 @@ public class CustomUserDetailsService implements UserDetailsService{
         try 
         {
             currentUser = userService.findUser(username);
-
-            if(currentUser == null)
-            {
-                throw new UsernameNotFoundException("Username not found: " + username);
-            }
-
-            return User.builder()
-                .username(currentUser.getUsername())
-                .password(currentUser.getPassword())
-                .roles(currentUser.getRole())
-                .build();
-            
         } 
         catch (ParseException e) 
         {
+            System.out.println("Parsing error for username: " + username);
             e.printStackTrace();
-            return null;
         }
 
+        if(currentUser == null)
+        {
+            throw new UsernameNotFoundException("Username not found: " + username);
+        }
         
+        return User.builder()
+            .username(currentUser.getUsername())
+            .password(currentUser.getPassword())
+            .roles(currentUser.getRole())
+            .build();
+
         
         // // TODO Auto-generated method stub
         // throw new UnsupportedOperationException("Unimplemented method 'loadUserByUsername'");
