@@ -3,7 +3,11 @@ package sg.edu.nus.iss.ssf_project_potluck_shamus.service;
 import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,8 @@ import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonReader;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.model.EventModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.repository.MapRepo;
 
@@ -73,28 +79,43 @@ public class EventService
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
+        // Extract String attributes
         String id = jsonObject.getString("id");
         String host = jsonObject.getString("host");
+        String title = jsonObject.getString("title");
+        String location = jsonObject.getString("location");
+
+        // Extract Date Attribute
+        Date date = sdf.parse(jsonObject.getString("date"));
+
+        // Extract List Attribute
+        List<String> participants = new ArrayList<>();
 
         JsonArray jParticipantsArray = jsonObject.getJsonArray("participants");
-        List<String> participants = jParticipantsArray
+        System.out.println("jParticipantArray is >>>" + jParticipantsArray);
+        
+        
 
+        for (int i = 0; i < jParticipantsArray.size(); i++)
+        {
+            participants.add(jParticipantsArray.getString(i));
+        }
+        System.out.println("participants is >>>" + participants);
 
-        // return new EventModel(
-        //         jsonObject.getString("id"),
-        //         jsonObject.getString("host"),
-        //         jsonObject.getJsonArray("participants"), 
-        //         jsonObject.getJsonObject("inviteStatus"), 
-        //         jsonObject.get, null, eventJsonString)
+        // Extract Map<String, String> Attribute
+         Map<String, String> inviteStatus = new HashMap<>();
+         
+        JsonObject jInviteStatusObject = jsonObject.getJsonObject("inviteStatus");
+        System.out.println("jInviteStatusObject is >>>" + jInviteStatusObject);
 
+        for (Entry<String, JsonValue> entry : jInviteStatusObject.entrySet())
+        {  
+            JsonString status = (JsonString) entry.getValue();
+            inviteStatus.put(entry.getKey(), status.getString());
+        }
+        System.out.println("inviteStatus is >>>" + inviteStatus);
 
-        // return new EventModel(
-        //         jsonObject.getString("id"),
-        //         jsonObject.getString("role"),
-        //         jsonObject.getString("email"),
-        //         jsonObject.getString("username"),
-        //         jsonObject.getString("password")
-        // );
+        // Return new Event object
+        return new EventModel(id, host, participants, inviteStatus, title, date, location);
     }
-
 }
