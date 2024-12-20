@@ -50,48 +50,6 @@ public class UserController
 
         return "login";
     }
-
-    // @PostMapping("/login")
-    // public String handleLogin(@Valid @ModelAttribute("user") UserModel user, BindingResult bindingResult, HttpSession httpSession, Model model) throws ParseException 
-    // {
-    //      if (bindingResult.hasErrors())
-    //     {
-    //         return "login"; // Return login form with errors
-    //     }
-
-    //     // inputs
-    //     String inputUsername = user.getUsername();
-    //     String inputPassword = user.getPassword();
-
-    //     // Check user exist
-    //     UserModel existingUser  = userService.findUser(inputUsername);
-    //     String existingUsername = existingUser.getUsername();
-
-    //     if (existingUsername == null)
-    //     {
-    //         model.addAttribute("errorMsg", "Invalid username or password. Please try again.");
-
-    //         return "login"; // Return login form with errors
-    //     }
-
-    //     if (existingUsername != null)
-    //     {
-    //         System.out.println("User is >>>" + existingUsername);
-
-    //         if (!userService.authenticate(inputPassword, existingUser))
-    //         {
-    //             model.addAttribute("errorMsg", "Invalid username or password. Please try again.");
-
-    //             return "login"; // Return login form with errors
-    //         }
-
-    //         httpSession.setAttribute("currentUser", existingUser);
-    //         model.addAttribute("username", existingUsername);
-    //     }
-
-    //     return "redirect:/home";  
-    // }
-
     
 
     // REGISTRATION
@@ -126,7 +84,7 @@ public class UserController
             // return "registration";
         }
 
-         if (bindingResult.hasErrors())
+        if (bindingResult.hasErrors())
         {
             return "registration"; // Return registration form with errors
         }

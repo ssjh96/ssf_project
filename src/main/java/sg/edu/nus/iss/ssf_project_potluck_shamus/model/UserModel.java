@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class UserModel {
@@ -32,14 +31,14 @@ public class UserModel {
     // Default Constructor for User object
     public UserModel() 
     {
-        this.id = UUID.randomUUID().toString().replace("-", "").substring(0,  8);
+        this.id = UUID.randomUUID().toString().replace("-", "").substring(0,  4);
         this.role = "USER";
     }
     
     // Constructor for new User object
     public UserModel(String email, String username, String password) 
     {
-        this.id = UUID.randomUUID().toString().replace("-", "").substring(0,  8);
+        this.id = UUID.randomUUID().toString().replace("-", "").substring(0,  4);
         this.role = "USER";
 
         this.email = email;

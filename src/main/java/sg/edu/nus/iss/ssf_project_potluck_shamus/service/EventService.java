@@ -21,14 +21,20 @@ import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
+import sg.edu.nus.iss.ssf_project_potluck_shamus.constant.Constant;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.model.EventModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.repository.MapRepo;
+import sg.edu.nus.iss.ssf_project_potluck_shamus.util.InviteStatus;
 
 @Service
 public class EventService 
 {
     @Autowired
     private MapRepo mapRepo;
+
+    String redisKey = Constant.eventsKey;
+
+
 
     private String serialiseEvent(EventModel event) 
     {
@@ -45,10 +51,10 @@ public class EventService
         // Convert Map<String, String> invite status into JsonObject {"x" : "pending"}
         JsonObjectBuilder job = Json.createObjectBuilder();
 
-        for (Entry<String, String> entry : event.getInviteStatus().entrySet())
+        for (Entry<String, InviteStatus> entry : event.getInviteStatus().entrySet())
         {
             String participant = entry.getKey();
-            String inviteStatus = entry.getValue();
+            String inviteStatus = entry.getValue().toString();
 
             job.add(participant, inviteStatus);
         }
@@ -89,12 +95,9 @@ public class EventService
         Date date = sdf.parse(jsonObject.getString("date"));
 
         // Extract List Attribute
-        List<String> participants = new ArrayList<>();
-
         JsonArray jParticipantsArray = jsonObject.getJsonArray("participants");
         System.out.println("jParticipantArray is >>>" + jParticipantsArray);
-        
-        
+        List<String> participants = new ArrayList<>();
 
         for (int i = 0; i < jParticipantsArray.size(); i++)
         {
@@ -103,19 +106,122 @@ public class EventService
         System.out.println("participants is >>>" + participants);
 
         // Extract Map<String, String> Attribute
-         Map<String, String> inviteStatus = new HashMap<>();
-         
         JsonObject jInviteStatusObject = jsonObject.getJsonObject("inviteStatus");
         System.out.println("jInviteStatusObject is >>>" + jInviteStatusObject);
+        Map<String, InviteStatus> inviteStatus = new HashMap<>();
 
         for (Entry<String, JsonValue> entry : jInviteStatusObject.entrySet())
         {  
             JsonString status = (JsonString) entry.getValue();
-            inviteStatus.put(entry.getKey(), status.getString());
+            inviteStatus.put(entry.getKey(), InviteStatus.valueOf(status.getString()));
         }
         System.out.println("inviteStatus is >>>" + inviteStatus);
 
         // Return new Event object
         return new EventModel(id, host, participants, inviteStatus, title, date, location);
     }
+
+
+
+    public void createEvent(EventModel event)
+    {
+        String fieldKey = redisKey + ":" + event.getId();
+        mapRepo.put(redisKey, fieldKey, serialiseEvent(event));
+    }
+
+
+    
+    public Boolean deleteEvent(String eventId)
+    {
+        String fieldKey = redisKey + ":" + eventId;
+        return mapRepo.delete(redisKey, fieldKey);
+    }
+
+
+
+    // Get events that specified user is participating in
+    public List<EventModel> getParticipatingEvents(String username) throws ParseException
+    {
+        // Retrieve from redis db all events {"events:xyz" : "stringified event json"}
+        Map<Object, Object> allEvents = mapRepo.getAll(redisKey);
+
+        List<EventModel> eventsParticipating = new ArrayList<>();
+
+        for (Entry<Object, Object> entry : allEvents.entrySet())
+        {
+            String eventJsonString = entry.getValue().toString();
+            EventModel event = deserialiseEvent(eventJsonString);
+
+            // if given user is the host or included in the list of participants, add to list of participating event
+            if (event.getHost().equals(username) || event.getParticipants().contains(username)) 
+            {
+                eventsParticipating.add(event);
+            }
+        }
+
+        return eventsParticipating;
+    }
+
+
+
+    // Get pending invites that specified user has
+    public List<EventModel> getPendingInvites (String username) throws ParseException
+    {
+        // Retrieve from redis db all events {"events:xyz" : "stringified event json"}
+        Map<Object, Object> allEvents = mapRepo.getAll(redisKey);
+
+        List<EventModel> pendingInvites = new ArrayList<>();
+
+        for (Entry<Object, Object> entry : allEvents.entrySet())
+        {
+            String eventJsonString = entry.getValue().toString();
+            EventModel event = deserialiseEvent(eventJsonString);
+
+            // if given user is a member of the event, and his/her status is still pending, add to list of pending invites
+            if (event.getInviteStatus().containsKey(username) && event.getInviteStatus().get(username).equals(InviteStatus.PENDING))
+            {
+                pendingInvites.add(event);
+            }
+        }
+
+        return pendingInvites;
+    }
+
+
+
+    public void sendInvite(String eventId, String invitee) throws ParseException
+    {
+        String fieldKey = redisKey + ":" + eventId;
+        EventModel event = deserialiseEvent(mapRepo.get(redisKey, fieldKey).toString());
+
+        event.getInviteStatus().put(invitee, InviteStatus.PENDING);
+        event.getParticipants().add(invitee);
+
+        mapRepo.put(redisKey, fieldKey, serialiseEvent(event));
+    }
+
+
+
+    public void acceptInvite(String eventId, String username) throws ParseException
+    {
+        String fieldKey = redisKey + ":" + eventId;
+        EventModel event = deserialiseEvent(mapRepo.get(redisKey, fieldKey).toString());
+
+        event.getInviteStatus().put(username, InviteStatus.ACCEPTED);
+
+        mapRepo.put(redisKey, fieldKey, serialiseEvent(event));
+    }
+
+
+
+    public void rejectInvite(String eventId, String username) throws ParseException
+    {
+        String fieldKey = redisKey + ":" + eventId;
+        EventModel event = deserialiseEvent(mapRepo.get(redisKey, fieldKey).toString());
+
+        event.getInviteStatus().put(username, InviteStatus.REJECTED);
+
+        mapRepo.put(redisKey, fieldKey, serialiseEvent(event));
+    }
+
 }

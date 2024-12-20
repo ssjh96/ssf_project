@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import sg.edu.nus.iss.ssf_project_potluck_shamus.util.InviteStatus;
 
 public class EventModel {
 
@@ -18,7 +19,7 @@ public class EventModel {
     private String id;
     private String host;
     private List<String> participants;
-    private Map<String, String> inviteStatus; // User: Pending/Accepted/Rejected
+    private Map<String, InviteStatus> inviteStatus; // User : PENDING/ACCEPTED/REJECTED
     
     // Validated Attributes
     @NotBlank(message = "Title must not be empty.")
@@ -40,14 +41,14 @@ public class EventModel {
     // Default Constructor
     public EventModel() 
     {
-        this.id = UUID.randomUUID().toString().replace("-", "").substring(0,  8);
+        this.id = UUID.randomUUID().toString().replace("-", "").substring(0,  4);
     }
 
     // Constructor for new event
-    public EventModel(String host, List<String> participants, Map<String, String> inviteStatus, String title,
+    public EventModel(String host, List<String> participants, Map<String, InviteStatus> inviteStatus, String title,
             Date date, String location) 
     {
-        this.id = UUID.randomUUID().toString().replace("-", "").substring(0,  8);
+        this.id = UUID.randomUUID().toString().replace("-", "").substring(0,  4);
         this.host = host;
         this.participants = participants;
         this.inviteStatus = inviteStatus;
@@ -58,7 +59,7 @@ public class EventModel {
     }
 
     // Constructor for updating or rebuilding event object from data stored in Redis DB
-    public EventModel(String id, String host, List<String> participants, Map<String, String> inviteStatus, String title,
+    public EventModel(String id, String host, List<String> participants, Map<String, InviteStatus> inviteStatus, String title,
             Date date, String location) 
     {
         this.id = id;
@@ -98,11 +99,11 @@ public class EventModel {
         this.participants = participants;
     }
 
-    public Map<String, String> getInviteStatus() {
+    public Map<String, InviteStatus> getInviteStatus() {
         return inviteStatus;
     }
 
-    public void setInviteStatus(Map<String, String> inviteStatus) {
+    public void setInviteStatus(Map<String, InviteStatus> inviteStatus) {
         this.inviteStatus = inviteStatus;
     }
 
@@ -129,13 +130,5 @@ public class EventModel {
     public void setLocation(String location) {
         this.location = location;
     }
-
-    
-    
-
-    
-
-    
-    
     
 }

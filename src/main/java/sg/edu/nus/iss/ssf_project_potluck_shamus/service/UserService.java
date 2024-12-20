@@ -154,6 +154,8 @@ public class UserService {
         mapRepo.put(redisKey, fieldKey, serialiseUser(user)); 
     }
 
+
+    
     public String suggestUsername(UserModel user)
     {
         Random rand = new Random();
@@ -170,12 +172,5 @@ public class UserService {
         return suggestion;
         
     }
-
-    public Boolean authenticate(String inputPassword, UserModel user)
-    {     
-        // check if user input passsword when encoded, matches the encoded pw stored in redis
-        return passwordEncoder.matches(inputPassword, user.getPassword()); 
-    }
-
     
 }
