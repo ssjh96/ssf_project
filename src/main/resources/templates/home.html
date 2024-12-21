@@ -24,6 +24,7 @@
                 <th>Date</th>
                 <th>Location</th>
                 <th>Host</th>
+                <th>Participants</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -33,6 +34,13 @@
                 <td th:text="${#dates.format(event.date, 'yyyy-MM-dd')}"></td>
                 <td th:text="${event.location}"></td>
                 <td th:text="${event.host}"></td>
+
+                <td>
+                    <ul>
+                        <li th:each="participant : ${event.participants}" th:text="${participant}"></li>
+                    </ul>
+                </td>
+    
 
                 <td>
                     <form th:action="@{/events/delete}" method="post" th:if="${event.host == username}">

@@ -70,42 +70,44 @@ public class EventController
     @PostMapping("/create")
     public String postCreateForm(@Valid @ModelAttribute ("events") EventModel event, 
                                 @AuthenticationPrincipal UserDetails userDetails, 
-                                @RequestParam ("participants") String participantsInput, 
+                                @RequestParam (value = "inputParticipants", required = false) String inputParticipants, 
                                 BindingResult bindingResult,
                                 Model model) throws ParseException 
     {
-        List<String> participants = new ArrayList<>();
+        List<String> participantsList = new ArrayList<>();
         List<String> invalidUsers = new ArrayList<>();
         Map<String, InviteStatus> inviteStatus = new HashMap<>();
 
         // Set user who created event as host
         String host = userDetails.getUsername();
         event.setHost(host);
-        participants.add(host);
+        participantsList.add(host);
         inviteStatus.put(host, InviteStatus.ACCEPTED);
 
 
-        // Check added participants
-        if (participantsInput != null)
+        // If participants are added and not just blank
+        if (inputParticipants != null && !inputParticipants.isBlank())
         {
-            String[] participantsArray = participantsInput.split(",");
+            String[] participantsArray = inputParticipants.split(",");
 
-            for (String p : participantsArray)
+            for (String participant : participantsArray)
             {
-                p = p.trim();
+                participant = participant.trim();
 
-                if (userService.findUser(p)!= null)
+                if (userService.findUser(participant)!= null)
                 {
-                    eventService.sendInvite(event.getId(), p);
+                    participantsList.add(participant);
+                    inviteStatus.put(participant, InviteStatus.PENDING);
                 }
 
                 else
                 {
-                    invalidUsers.add(p);
+                    invalidUsers.add(participant);
                 }
             }
         }
 
+        // Custom Validation: Host entered invalid usernames, show who is invalid.
         if(!invalidUsers.isEmpty())
         {
             ObjectError error = new ObjectError("globalError", "Users not found: %s".formatted(invalidUsers));
@@ -116,6 +118,9 @@ public class EventController
         {
             return "createform"; // Return creation form with errors
         }
+
+        event.setParticipants(participantsList);
+        event.setInviteStatus(inviteStatus);
 
         eventService.createEvent(event);
         

@@ -83,7 +83,7 @@ public class EventService
         JsonReader reader = Json.createReader(new StringReader(eventJsonString));
         JsonObject jsonObject = reader.readObject();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         // Extract String attributes
         String id = jsonObject.getString("id");
@@ -92,7 +92,8 @@ public class EventService
         String location = jsonObject.getString("location");
 
         // Extract Date Attribute
-        Date date = sdf.parse(jsonObject.getString("date"));
+        Long dateLong = jsonObject.getJsonNumber("date").longValue();
+        Date date = new Date(dateLong);
 
         // Extract List Attribute
         JsonArray jParticipantsArray = jsonObject.getJsonArray("participants");
