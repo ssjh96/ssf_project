@@ -23,7 +23,7 @@ public class EventModel {
     
     // Validated Attributes
     @NotBlank(message = "Title must not be blank.")
-    @Size(max = 10, message = "Title must be less than 30 characters long.")
+    @Size(max = 30, message = "Title must be less than 30 characters long.")
     private String title;
 
     @Future(message = "Post date must be a future date")
@@ -32,7 +32,7 @@ public class EventModel {
     private Date date;
 
     @NotBlank(message = "Location must not be empty.")
-    @Size(max = 10, message = "Location must be less than 50 characters long.")
+    @Size(max = 50, message = "Location must be less than 50 characters long.")
     private String location;
 
     

@@ -37,7 +37,11 @@
 
                 <td>
                     <ul>
-                        <li th:each="participant : ${event.participants}" th:text="${participant}"></li>
+                        <!-- Loop  thru inviteStatus-->
+                        <li th:each="entry : ${event.inviteStatus}">
+                            <span th:text="${entry.key}"></span> -
+                            <span th:text="${entry.value}"></span>
+                        </li>
                     </ul>
                 </td>
     

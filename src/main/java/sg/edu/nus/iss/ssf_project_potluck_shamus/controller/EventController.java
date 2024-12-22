@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -68,15 +67,20 @@ public class EventController
     }
 
     @PostMapping("/create")
-    public String postCreateForm(@Valid @ModelAttribute ("events") EventModel event, 
+    public String postCreateForm(@Valid @ModelAttribute ("event") EventModel event,
+                                BindingResult bindingResult, 
                                 @AuthenticationPrincipal UserDetails userDetails, 
                                 @RequestParam (value = "inputParticipants", required = false) String inputParticipants, 
-                                BindingResult bindingResult,
                                 Model model) throws ParseException 
     {
         List<String> participantsList = new ArrayList<>();
         List<String> invalidUsers = new ArrayList<>();
         Map<String, InviteStatus> inviteStatus = new HashMap<>();
+
+        if (bindingResult.hasErrors())
+        {
+            return "createform"; // Return creation form with errors
+        }
 
         // Set user who created event as host
         String host = userDetails.getUsername();
@@ -112,11 +116,8 @@ public class EventController
         {
             ObjectError error = new ObjectError("globalError", "Users not found: %s".formatted(invalidUsers));
             bindingResult.addError(error);
-        }
 
-        if (bindingResult.hasErrors())
-        {
-            return "createform"; // Return creation form with errors
+            return "createform";
         }
 
         event.setParticipants(participantsList);

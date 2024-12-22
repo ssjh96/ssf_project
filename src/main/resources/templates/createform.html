@@ -16,34 +16,30 @@
 
         <form method="POST" th:action="@{/events/create}" th:object="${event}">
 
-            <!-- Title -->
             <div class="mb-3">
                 <label for="title" class="form-label">Event Title:</label>
                 <input type="text" id="title" class="form-control" name="title" th:field="*{title}" placeholder="Enter Event Title" />
                 <p class="text-danger" data-th-if="${#fields.hasErrors('title')}" data-th-errors="*{title}"></p>
             </div>
 
-            <!-- Date -->
             <div class="mb-3">
                 <label for="date" class="form-label">Event Date:</label>
                 <input type="date" id="date" class="form-control" name="date" th:field="*{date}" placeholder="Enter Event Date" />
                 <p class="text-danger" data-th-if="${#fields.hasErrors('date')}" data-th-errors="*{date}"></p>
             </div>
 
-            <!-- Location -->
             <div class="mb-3">
                 <label for="location" class="form-label">Location:</label>
                 <input type="text" id="location" class="form-control" name="location" th:field="*{location}" placeholder="Enter Location" />
                 <p class="text-danger" data-th-if="${#fields.hasErrors('location')}" data-th-errors="*{location}"></p>
             </div>
 
-            <!-- Participants -->
             <div class="mb-3">
-                <label for="participants" class="form-label">Invite Participants (comma-separated usernames):</label>
-                <input type="text" id="participants" class="form-control" name="participants" placeholder="Enter Participants' Usernames" />
+                <label for="inputParticipants" class="form-label">Invite Participants (Separate usernames with comma ","):</label>
+                <input type="text" id="inputParticipants" class="form-control" name="inputParticipants" placeholder="Enter Participant Username(s)" />
             </div>
 
-            <!-- Global Error Section -->
+            <!-- Global Error -->
             <div th:if="${#fields.hasGlobalErrors()}">
                 <p class="text-danger" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
             </div>
