@@ -16,6 +16,10 @@
         <button class = "btn btn-danger" type="submit">Logout</button>
     </form>
 
+    <div th:if="${deletedMsg}" class="alert alert-success">
+        <p th:text="${deletedMsg}"></p>
+    </div>
+
     <h2>Your Events</h2>
     <table class="table table-striped">
         <thead>
@@ -29,7 +33,13 @@
             </tr>
         </thead>
         <tbody>
+
+            <tr th:if="${events.size() == 0}">
+                <td>No records found!</td>
+            </tr>
+            
             <tr th:each="event : ${events}">
+
                 <td th:text="${event.title}"></td>
                 <td th:text="${#dates.format(event.date, 'yyyy-MM-dd')}"></td>
                 <td th:text="${event.location}"></td>
@@ -44,7 +54,6 @@
                         </li>
                     </ul>
                 </td>
-    
 
                 <td>
                     <form th:action="@{/events/delete}" method="post" th:if="${event.host == username}">
@@ -58,22 +67,40 @@
     </table>
 
     <h2>Notifications</h2>
-        <ul>
-            <li th:each="pendingEvent : ${pendingEvents}">
-                <p>You're invited to <span th:text="${pendingEvent.title}">.</span></p>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Invitation</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-                <form th:action="@{/events/accept}" method="post">
-                    <input type="hidden" name="eventId" th:value="${pendingEvent.id}">
-                    <button class="btn btn-success">Accept</button>
-                </form>
+            <tbody>
 
-                <form th:action="@{/events/reject}" method="post">
-                    <input type="hidden" name="eventId" th:value="${pendingEvent.id}">
-                    <button class="btn btn-danger">Reject</button>
-                </form>
-                
-            </li>
-        </ul>
+                <tr th:if="${pendingEvents.size() == 0}">
+                    <td>No pending invites</td>
+                </tr>
+
+                <tr th:each="pendingEvent, state : ${pendingEvents}">
+                   
+                    <td>You're invited to <span th:text="${pendingEvent.title}"></span>.</span></td>
+                    
+                    <td>
+                        <form th:action="@{/events/accept}" method="post">
+                            <input type="hidden" name="eventId" th:value="${pendingEvent.id}">
+                            <button class="btn btn-success">Accept</button>
+                        </form>
+
+                        <form th:action="@{/events/reject}" method="post">
+                            <input type="hidden" name="eventId" th:value="${pendingEvent.id}">
+                            <button class="btn btn-danger">Reject</button>
+                        </form>
+                    </td>   
+
+                </tr>
+            </tbody>
+        </table>
+       
 
         <div class="mt-4">
             <a th:href="@{/events/create}" class="btn btn-primary">Create Event</a>

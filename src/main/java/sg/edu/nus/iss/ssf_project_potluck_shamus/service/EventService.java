@@ -132,10 +132,10 @@ public class EventService
 
 
     
-    public Boolean deleteEvent(String eventId)
+    public void deleteEvent(String eventId) throws ParseException
     {
         String fieldKey = redisKey + ":" + eventId;
-        return mapRepo.delete(redisKey, fieldKey);
+        mapRepo.deleteEvent(redisKey, fieldKey);
     }
 
 

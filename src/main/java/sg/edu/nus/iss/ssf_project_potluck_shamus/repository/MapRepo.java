@@ -59,6 +59,11 @@ public class MapRepo {
         return isDeleted; // Returns true if deletion was successful, false otherwise
     }
 
+    public void deleteEvent(String redisKey, String fieldKey)
+    {
+        redisTemplate.opsForHash().delete(redisKey, fieldKey);
+    }
+
 
 
     // HEXISTS - Check if a field exists in a Redis hash 

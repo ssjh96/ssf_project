@@ -44,7 +44,9 @@ public class EventController
 
     // HOME PAGE
     @GetMapping("/home")
-    public String showHomePage(@AuthenticationPrincipal UserDetails userDetails, Model model) throws ParseException 
+    public String showHomePage(@AuthenticationPrincipal UserDetails userDetails, 
+                                @RequestParam (value = "deleted", required = false) String deleted,
+                                Model model) throws ParseException 
     {
         String username = userDetails.getUsername();
         model.addAttribute("username", username);
@@ -56,6 +58,11 @@ public class EventController
         // Get all pending invitations sent to user
         List<EventModel> pendingEvents = eventService.getPendingInvites(username);
         model.addAttribute("pendingEvents", pendingEvents);
+
+        if (deleted != null)
+        {
+            model.addAttribute("deletedMsg", "Event successfully deleted.");
+        }
 
         return"home";
     }
@@ -130,6 +137,13 @@ public class EventController
         return "redirect:/events/home";
     }
     
+    @PostMapping("/delete")
+    public String deleteEvent(@RequestParam("eventId") String eventId) throws ParseException 
+    {
+        eventService.deleteEvent(eventId);
+
+        return "redirect:/events/home?deleted";
+    }
     
 
     @PostMapping("/accept")
