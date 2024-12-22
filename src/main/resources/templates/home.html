@@ -12,12 +12,16 @@
     <p>Welcome, <span th:text="${username}"></span>.</p>
     <br>
 
-    <form th:action="@{/users/logout}" method="post">
+    <form method="post" th:action="@{/users/logout}">
         <button class = "btn btn-danger" type="submit">Logout</button>
     </form>
 
     <div th:if="${deletedMsg}" class="alert alert-success">
         <p th:text="${deletedMsg}"></p>
+    </div>
+
+    <div th:if="${notDeletedMsg}" class="alert alert-danger">
+        <p th:text="${notDeletedMsg}"></p>
     </div>
 
     <h2>Your Events</h2>
@@ -56,9 +60,9 @@
                 </td>
 
                 <td>
-                    <form th:action="@{/events/delete}" method="post" th:if="${event.host == username}">
+                    <form method="post" th:action="@{/events/delete}">
                         <input type="hidden" name="eventId" th:value="${event.id}">
-                        <button class="btn btn-danger">Delete</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
                 </td>
 
@@ -79,6 +83,7 @@
 
                 <tr th:if="${pendingEvents.size() == 0}">
                     <td>No pending invites</td>
+                    <td>-</td>
                 </tr>
 
                 <tr th:each="pendingEvent, state : ${pendingEvents}">

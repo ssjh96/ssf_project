@@ -132,10 +132,19 @@ public class EventService
 
 
     
-    public void deleteEvent(String eventId) throws ParseException
+    public Boolean deleteEvent(String eventId, String username) throws ParseException
     {
         String fieldKey = redisKey + ":" + eventId;
-        mapRepo.deleteEvent(redisKey, fieldKey);
+        EventModel event = deserialiseEvent(mapRepo.get(redisKey, fieldKey).toString());
+
+        if (event.getHost().equals(username))
+        {
+            mapRepo.deleteEvent(redisKey, fieldKey);
+
+            return true;
+        }     
+        
+        return false;
     }
 
 

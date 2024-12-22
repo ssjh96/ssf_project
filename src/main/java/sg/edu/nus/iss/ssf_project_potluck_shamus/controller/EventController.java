@@ -46,6 +46,7 @@ public class EventController
     @GetMapping("/home")
     public String showHomePage(@AuthenticationPrincipal UserDetails userDetails, 
                                 @RequestParam (value = "deleted", required = false) String deleted,
+                                @RequestParam (value = "notDeleted", required = false) String notDeleted,
                                 Model model) throws ParseException 
     {
         String username = userDetails.getUsername();
@@ -62,6 +63,11 @@ public class EventController
         if (deleted != null)
         {
             model.addAttribute("deletedMsg", "Event successfully deleted.");
+        }
+
+        if (notDeleted != null)
+        {
+            model.addAttribute("notDeletedMsg", "Error, only the host can delete the event.");
         }
 
         return"home";
@@ -138,9 +144,14 @@ public class EventController
     }
     
     @PostMapping("/delete")
-    public String deleteEvent(@RequestParam("eventId") String eventId) throws ParseException 
+    public String deleteEvent(@AuthenticationPrincipal UserDetails userDetails, 
+                                @RequestParam("eventId") String eventId) throws ParseException 
     {
-        eventService.deleteEvent(eventId);
+        String username = userDetails.getUsername();
+        if (!eventService.deleteEvent(eventId, username))
+        {
+            return "redirect:/events/home?notDeleted";
+        }
 
         return "redirect:/events/home?deleted";
     }
