@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
@@ -52,8 +54,8 @@ public class EventController
         model.addAttribute("events", events);
 
         // Get all pending invitations sent to user
-        List<EventModel> notifications = eventService.getPendingInvites(username);
-        model.addAttribute("notifications", notifications);
+        List<EventModel> pendingEvents = eventService.getPendingInvites(username);
+        model.addAttribute("pendingEvents", pendingEvents);
 
         return"home";
     }
@@ -129,6 +131,25 @@ public class EventController
     }
     
     
-    
 
+    @PostMapping("/accept")
+    public String acceptInvite(@AuthenticationPrincipal UserDetails userDetails,
+                                @RequestParam("eventId") String eventId) throws ParseException 
+    {
+        String username = userDetails.getUsername();
+        eventService.acceptInvite(eventId, username);
+
+        return "redirect:/events/home";
+    }
+    
+    @PostMapping("/reject")
+    public String rejectInvite(@AuthenticationPrincipal UserDetails userDetails,
+                                @RequestParam("eventId") String eventId) throws ParseException 
+    {
+        String username = userDetails.getUsername();
+        eventService.rejectInvite(eventId, username);
+
+        return "redirect:/events/home";
+    }
+    
 }

@@ -59,16 +59,16 @@
 
     <h2>Notifications</h2>
         <ul>
-            <li th:each="invite : ${notifications}">
-                <p>You're invited to <span th:text="${invite}">.</span></p>
+            <li th:each="pendingEvent : ${pendingEvents}">
+                <p>You're invited to <span th:text="${pendingEvent.title}">.</span></p>
 
                 <form th:action="@{/events/accept}" method="post">
-                    <input type="hidden" name="eventId" th:value="${invite}">
+                    <input type="hidden" name="eventId" th:value="${pendingEvent.id}">
                     <button class="btn btn-success">Accept</button>
                 </form>
 
                 <form th:action="@{/events/reject}" method="post">
-                    <input type="hidden" name="eventId" th:value="${invite}">
+                    <input type="hidden" name="eventId" th:value="${pendingEvent.id}">
                     <button class="btn btn-danger">Reject</button>
                 </form>
                 
