@@ -22,6 +22,7 @@ import sg.edu.nus.iss.ssf_project_potluck_shamus.util.InviteStatus;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
@@ -113,6 +114,15 @@ public class EventController
             {
                 participant = participant.trim();
 
+                if(participant.equals(host))
+                {
+                    ObjectError error = new ObjectError("globalError", "Cannot add yourself: %s".formatted(host));
+                    bindingResult.addError(error);
+
+                    // invalidUsers.add(host);
+                    return "createform";
+                }
+
                 if (userService.findUser(participant)!= null)
                 {
                     participantsList.add(participant);
@@ -175,6 +185,19 @@ public class EventController
         eventService.rejectInvite(eventId, username);
 
         return "redirect:/events/home";
+    }
+
+    @PostMapping("/view")
+    public String viewEvent(@RequestParam ("eventId") String eventId,
+                            Model model) throws ParseException 
+    {
+        EventModel event = eventService.getEvent(eventId);
+        model.addAttribute("event", event);
+
+        List<String> participants = eventService.getAcceptedParticipants(eventId);
+        model.addAttribute("participants", participants);
+
+        return "viewevent";
     }
     
 }

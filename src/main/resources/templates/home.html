@@ -9,12 +9,15 @@
 </head>
 
 <body>
-    <p>Welcome, <span th:text="${username}"></span>.</p>
-    <br>
+    <h1>Welcome, <span th:text="${username}"></span>.</h1>
 
     <form method="post" th:action="@{/users/logout}">
         <button class = "btn btn-danger" type="submit">Logout</button>
     </form>
+
+    <hr>
+
+    <br>
 
     <div th:if="${deletedMsg}" class="alert alert-success">
         <p th:text="${deletedMsg}"></p>
@@ -23,7 +26,7 @@
     <div th:if="${notDeletedMsg}" class="alert alert-danger">
         <p th:text="${notDeletedMsg}"></p>
     </div>
-
+    
     <h2>Your Events</h2>
     <table class="table table-striped">
         <thead>
@@ -40,6 +43,11 @@
 
             <tr th:if="${events.size() == 0}">
                 <td>No records found!</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
             </tr>
             
             <tr th:each="event : ${events}">
@@ -51,7 +59,7 @@
 
                 <td>
                     <ul>
-                        <!-- Loop  thru inviteStatus-->
+                        <!-- Loop  thru inviteStatus, <participant, inviteStatus>-->
                         <li th:each="entry : ${event.inviteStatus}">
                             <span th:text="${entry.key}"></span> -
                             <span th:text="${entry.value}"></span>
@@ -60,6 +68,11 @@
                 </td>
 
                 <td>
+                    <form method="post" th:action="@{/events/view}">
+                        <input type="hidden" name="eventId" th:value="${event.id}">
+                        <button type="submit" class="btn btn-primary">View</button>
+                    </form>
+
                     <form method="post" th:action="@{/events/delete}">
                         <input type="hidden" name="eventId" th:value="${event.id}">
                         <button type="submit" class="btn btn-danger">Delete</button>
@@ -69,6 +82,8 @@
             </tr>
         </tbody>
     </table>
+
+    <br> 
 
     <h2>Notifications</h2>
         <table class="table table-striped">
@@ -86,7 +101,7 @@
                     <td>-</td>
                 </tr>
 
-                <tr th:each="pendingEvent, state : ${pendingEvents}">
+                <tr th:each="pendingEvent : ${pendingEvents}">
                    
                     <td>You're invited to <span th:text="${pendingEvent.title}"></span>.</span></td>
                     

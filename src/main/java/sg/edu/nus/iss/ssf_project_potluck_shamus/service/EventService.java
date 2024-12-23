@@ -48,25 +48,39 @@ public class EventService
 
         JsonArray jParticipantsArray = jab.build();
 
+        // Convert Map<String, String> contributions into JsonObject {"x" : "food"}
+        JsonObjectBuilder job1 = Json.createObjectBuilder();
+
+        for (Entry<String, String> entry : event.getContributions().entrySet())
+        {
+            String participant = entry.getKey();
+            String contribution = entry.getValue().toString();
+
+            job1.add(participant, contribution);
+        }
+
+        JsonObject jContributionsObject = job1.build();
+
         // Convert Map<String, String> invite status into JsonObject {"x" : "pending"}
-        JsonObjectBuilder job = Json.createObjectBuilder();
+        JsonObjectBuilder job2 = Json.createObjectBuilder();
 
         for (Entry<String, InviteStatus> entry : event.getInviteStatus().entrySet())
         {
             String participant = entry.getKey();
             String inviteStatus = entry.getValue().toString();
 
-            job.add(participant, inviteStatus);
+            job2.add(participant, inviteStatus);
         }
         
-        JsonObject jInviteStatusObject = job.build();
+        JsonObject jInviteStatusObject = job2.build();
 
         // Serialised event object
         String eventJsonString = Json.createObjectBuilder()
                 .add("id", event.getId())
                 .add("host", event.getHost())
                 .add("participants", jParticipantsArray) // List<String>
-                .add("inviteStatus", jInviteStatusObject) // Map <String, String>
+                .add("contributions", jContributionsObject) // Map <String, String> contributions
+                .add("inviteStatus", jInviteStatusObject) // Map <String, String> invite status
                 .add("title", event.getTitle())
                 .add("date", event.getDate().getTime()) // Date Format stored as Long
                 .add("location", event.getLocation())
@@ -106,7 +120,19 @@ public class EventService
         }
         System.out.println("participants is >>>" + participants);
 
-        // Extract Map<String, String> Attribute
+        // Extract Map<String, String> contributions
+        JsonObject jContributionsObject = jsonObject.getJsonObject("contributions");
+        System.out.println("jContributionsObject is >>>" + jContributionsObject);
+        Map<String, String> contributions = new HashMap<>();
+
+        for (Entry<String, JsonValue> entry : jContributionsObject.entrySet())
+        {  
+            JsonString contribution = (JsonString) entry.getValue();
+            contributions.put(entry.getKey(), contribution.getString());
+        }
+        System.out.println("inviteStatus is >>>" + contributions);
+
+        // Extract Map<String, String> invite status
         JsonObject jInviteStatusObject = jsonObject.getJsonObject("inviteStatus");
         System.out.println("jInviteStatusObject is >>>" + jInviteStatusObject);
         Map<String, InviteStatus> inviteStatus = new HashMap<>();
@@ -119,7 +145,7 @@ public class EventService
         System.out.println("inviteStatus is >>>" + inviteStatus);
 
         // Return new Event object
-        return new EventModel(id, host, participants, inviteStatus, title, date, location);
+        return new EventModel(id, host, participants, contributions, inviteStatus, title, date, location);
     }
 
 
@@ -143,8 +169,16 @@ public class EventService
 
             return true;
         }     
-        
+
         return false;
+    }
+
+    public EventModel getEvent(String eventId) throws ParseException
+    {
+        String fieldKey = redisKey + ":" + eventId;
+        EventModel event = deserialiseEvent(mapRepo.get(redisKey, fieldKey).toString());
+
+        return event;
     }
 
 
@@ -170,6 +204,27 @@ public class EventService
         }
 
         return eventsParticipating;
+    }
+
+    
+    // Get all participants that accepted the invite
+    public List<String> getAcceptedParticipants(String eventId) throws ParseException
+    {
+        String fieldKey = redisKey + ":" + eventId;
+        EventModel event = deserialiseEvent(mapRepo.get(redisKey, fieldKey).toString());
+
+        Map<String, InviteStatus> allInvited = event.getInviteStatus();
+        List<String> acceptedParticipants = new ArrayList<>();
+
+        for (Entry<String, InviteStatus> entry : allInvited.entrySet())
+        {  
+            if(entry.getValue().equals(InviteStatus.ACCEPTED))
+            {
+                acceptedParticipants.add(entry.getKey());
+            }
+        }
+
+        return acceptedParticipants;
     }
 
 
@@ -201,6 +256,8 @@ public class EventService
 
     public void sendInvite(String eventId, String invitee) throws ParseException
     {
+        // EventModel event = getEvent(eventId);
+
         String fieldKey = redisKey + ":" + eventId;
         EventModel event = deserialiseEvent(mapRepo.get(redisKey, fieldKey).toString());
 
@@ -233,5 +290,7 @@ public class EventService
 
         mapRepo.put(redisKey, fieldKey, serialiseEvent(event));
     }
+
+    
 
 }

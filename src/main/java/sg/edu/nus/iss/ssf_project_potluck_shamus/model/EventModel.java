@@ -1,6 +1,7 @@
 package sg.edu.nus.iss.ssf_project_potluck_shamus.model;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -19,6 +20,7 @@ public class EventModel {
     private String id;
     private String host;
     private List<String> participants;
+    private Map<String, String> contributions;
     private Map<String, InviteStatus> inviteStatus; // User : PENDING/ACCEPTED/REJECTED
     
     // Validated Attributes
@@ -42,15 +44,17 @@ public class EventModel {
     public EventModel() 
     {
         this.id = UUID.randomUUID().toString().replace("-", "").substring(0,  4);
+        this.contributions = new HashMap<>();
     }
 
     // Constructor for new event
-    public EventModel(String host, List<String> participants, Map<String, InviteStatus> inviteStatus, String title,
+    public EventModel(String host, List<String> participants, Map<String, String> contributions, Map<String, InviteStatus> inviteStatus, String title,
             Date date, String location) 
     {
         this.id = UUID.randomUUID().toString().replace("-", "").substring(0,  4);
         this.host = host;
         this.participants = participants;
+        this.contributions = new HashMap<>();
         this.inviteStatus = inviteStatus;
 
         this.title = title;
@@ -59,13 +63,14 @@ public class EventModel {
     }
 
     // Constructor for updating or rebuilding event object from data stored in Redis DB
-    public EventModel(String id, String host, List<String> participants, Map<String, InviteStatus> inviteStatus, String title,
+    public EventModel(String id, String host, List<String> participants, Map<String, String> contributions, Map<String, InviteStatus> inviteStatus, String title,
             Date date, String location) 
     {
         this.id = id;
         this.host = host;
         this.participants = participants;
         this.inviteStatus = inviteStatus;
+        this.contributions = contributions;
 
         this.title = title;
         this.date = date;
@@ -113,6 +118,14 @@ public class EventModel {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Map<String, String> getContributions() {
+        return contributions;
+    }
+
+    public void setContributions(Map<String, String> contributions) {
+        this.contributions = contributions;
     }
 
     public Date getDate() {
