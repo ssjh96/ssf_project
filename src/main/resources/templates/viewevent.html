@@ -41,7 +41,7 @@
 
         <p>Currently logged in as: <span th:text="${username}"></span></p>
          <!-- /events/add?eventId=12345 -->
-        <form method="get" th:action="@{/events/addfood}">
+        <form method="get" th:action="@{/events/addcontribution}">
             <input type="hidden" name="eventId" th:value="${event.id}">
             <button type="submit" class="btn btn-primary">Add/Update</button>
 

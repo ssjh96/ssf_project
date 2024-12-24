@@ -212,16 +212,19 @@ public class EventController
     }
 
     // /events/add?eventId=12345 ?key=value
-    @GetMapping("/addfood")
+    @GetMapping("/addcontribution")
     public String addContributions(@AuthenticationPrincipal UserDetails userDetails,
                                     @RequestParam("eventId") String eventId, 
                                     Model model) throws ParseException 
     {
         String username = userDetails.getUsername();
         EventModel event = eventService.getEvent(eventId);
+
+        model.addAttribute("username", username);
+        model.addAttribute("event", event);
         
 
-        return null;
+        return "addcontribution";
     }
     
     
