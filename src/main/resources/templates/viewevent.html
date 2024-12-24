@@ -24,34 +24,29 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Participants</th>
-                    <th>Action</th>
+                    <th>S/N</th>
+                    <th>Participant</th>
+                    <th>Contribution</th>
                 </tr>
             </thead>
             <tbody>
-    
-                <tr th:if="${event.contributions.size() == 0}">
-                    <td>No records found!</td>
-                    <td>-</td>
-                </tr>
                 
-                <tr th:each="contribution : ${event.contributions}">
-    
-                    <td th:text="${event.title}"></td>
-    
-                    <td>
-                        <form method="post" th:action="@{/events/add}">
-                            <input type="hidden" name="eventId" th:value="${event.id}">
-                            <button type="submit" class="btn btn-primary">add</button>
-                        </form>
-                    </td>
-    
+                <tr th:each="entry, state : ${pContributions}">
+                    <td th:text="${state.index + 1}"></td>
+                    <td th:text="${entry.key}"></td>
+                    <td th:text="${entry.value}"></td>
                 </tr>
             </tbody>
         </table>
 
+        <p>Currently logged in as: <span th:text="${username}"></span></p>
+         <!-- /events/add?eventId=12345 -->
+        <form method="get" th:action="@{/events/addfood}">
+            <input type="hidden" name="eventId" th:value="${event.id}">
+            <button type="submit" class="btn btn-primary">Add/Update</button>
 
-
+            <a class = "btn btn-danger" th:href="@{/events/home}">Back</a>
+        </form>
 
     </div>
     

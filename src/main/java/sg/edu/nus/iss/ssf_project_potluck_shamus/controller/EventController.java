@@ -91,7 +91,10 @@ public class EventController
     {
         List<String> participantsList = new ArrayList<>();
         List<String> invalidUsers = new ArrayList<>();
+
+        Map<String, String> contributions = new HashMap<>();
         Map<String, InviteStatus> inviteStatus = new HashMap<>();
+        
 
         if (bindingResult.hasErrors())
         {
@@ -102,6 +105,8 @@ public class EventController
         String host = userDetails.getUsername();
         event.setHost(host);
         participantsList.add(host);
+
+        contributions.put(host, "No contribution yet");
         inviteStatus.put(host, InviteStatus.ACCEPTED);
 
 
@@ -126,6 +131,7 @@ public class EventController
                 if (userService.findUser(participant)!= null)
                 {
                     participantsList.add(participant);
+                    contributions.put(participant, "No contribution yet");
                     inviteStatus.put(participant, InviteStatus.PENDING);
                 }
 
@@ -146,6 +152,7 @@ public class EventController
         }
 
         event.setParticipants(participantsList);
+        event.setContributions(contributions);
         event.setInviteStatus(inviteStatus);
 
         eventService.createEvent(event);
@@ -187,17 +194,35 @@ public class EventController
         return "redirect:/events/home";
     }
 
-    @PostMapping("/view")
-    public String viewEvent(@RequestParam ("eventId") String eventId,
+    @GetMapping("/view")
+    public String viewEvent(@AuthenticationPrincipal UserDetails userDetails,
+                            @RequestParam ("eventId") String eventId,
                             Model model) throws ParseException 
     {
+        String username = userDetails.getUsername();
+        model.addAttribute("username", username);
+
         EventModel event = eventService.getEvent(eventId);
         model.addAttribute("event", event);
 
-        List<String> participants = eventService.getAcceptedParticipants(eventId);
-        model.addAttribute("participants", participants);
+        Map<String, String> pContributions = eventService.getParticipatingContributions(eventId);
+        model.addAttribute("pContributions", pContributions);
 
         return "viewevent";
     }
+
+    // /events/add?eventId=12345 ?key=value
+    @GetMapping("/addfood")
+    public String addContributions(@AuthenticationPrincipal UserDetails userDetails,
+                                    @RequestParam("eventId") String eventId, 
+                                    Model model) throws ParseException 
+    {
+        String username = userDetails.getUsername();
+        EventModel event = eventService.getEvent(eventId);
+        
+
+        return null;
+    }
+    
     
 }

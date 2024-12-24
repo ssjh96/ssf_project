@@ -68,7 +68,7 @@
                 </td>
 
                 <td>
-                    <form method="post" th:action="@{/events/view}">
+                    <form method="get" th:action="@{/events/view}">
                         <input type="hidden" name="eventId" th:value="${event.id}">
                         <button type="submit" class="btn btn-primary">View</button>
                     </form>

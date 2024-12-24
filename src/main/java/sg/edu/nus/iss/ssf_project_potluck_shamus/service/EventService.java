@@ -206,8 +206,8 @@ public class EventService
         return eventsParticipating;
     }
 
-    
-    // Get all participants that accepted the invite
+    // NOT IN USE
+    // Get all participants that accepted the invite 
     public List<String> getAcceptedParticipants(String eventId) throws ParseException
     {
         String fieldKey = redisKey + ":" + eventId;
@@ -227,6 +227,30 @@ public class EventService
         return acceptedParticipants;
     }
 
+
+    // Get all contributions from accepted participants
+    public Map<String, String> getParticipatingContributions(String eventId) throws ParseException
+    {
+        String fieldKey = redisKey + ":" + eventId;
+        EventModel event = deserialiseEvent(mapRepo.get(redisKey, fieldKey).toString());
+
+        Map<String, InviteStatus> allInvited = event.getInviteStatus();
+        Map<String, String> allContributions = event.getContributions();
+        Map<String, String> pContributions = new HashMap<>();
+
+        for (Entry<String, InviteStatus> entry : allInvited.entrySet())
+        {  
+            String participant = entry.getKey();
+            InviteStatus status = entry.getValue();
+
+            if (allContributions.containsKey(participant) && status.equals(InviteStatus.ACCEPTED))
+            {
+                pContributions.put(participant, allContributions.get(participant));
+            }
+        }
+
+        return pContributions;
+    }
 
 
     // Get pending invites that specified user has
@@ -253,7 +277,7 @@ public class EventService
     }
 
 
-
+    // NOT IN USE
     public void sendInvite(String eventId, String invitee) throws ParseException
     {
         // EventModel event = getEvent(eventId);
