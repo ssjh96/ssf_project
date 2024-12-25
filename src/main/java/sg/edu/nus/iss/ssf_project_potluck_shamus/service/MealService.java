@@ -38,15 +38,15 @@ public class MealService {
             MealModel meal = new MealModel();
             JsonObject jMeal = mealsArray.getJsonObject(i);
 
-            meal.setIdMeal(jMeal.getString("idMeal", ""));
-            meal.setStrMeal(jMeal.getString("strMeal", ""));
-            meal.setStrCategory(jMeal.getString("strCategory", ""));
-            meal.setStrArea(jMeal.getString("strArea", ""));
-            meal.setStrInstructions(jMeal.getString("strInstructions", ""));
-            meal.setStrMealThumb(jMeal.getString("strMealThumb", ""));
-            meal.setStrTags(jMeal.getString("strTags", ""));
-            meal.setStrYoutube(jMeal.getString("strYoutube", ""));
-            meal.setStrSource(jMeal.getString("strSource", ""));
+            meal.setId(jMeal.getString("idMeal", ""));
+            meal.setName(jMeal.getString("strMeal", ""));
+            meal.setCategory(jMeal.getString("strCategory", ""));
+            meal.setArea(jMeal.getString("strArea", ""));
+            meal.setInstructions(jMeal.getString("strInstructions", ""));
+            meal.setThumbnailLink(jMeal.getString("strMealThumb", ""));
+            meal.setTags(jMeal.getString("strTags", ""));
+            meal.setYoutubeLink(jMeal.getString("strYoutube", ""));
+            meal.setSource(jMeal.getString("strSource", ""));
 
 
             List<String> ingredients = new ArrayList<>();

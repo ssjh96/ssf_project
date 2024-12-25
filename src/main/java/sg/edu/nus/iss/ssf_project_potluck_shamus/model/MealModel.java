@@ -4,101 +4,99 @@ import java.util.List;
 
 public class MealModel 
 {
-    private String idMeal;
-    private String strMeal;
-    private String strCategory;
-    private String strArea;
-    private String strInstructions;
-    private String strMealThumb;
-    private String strTags;
-    private String strYoutube;
+    private String id;
+    private String name;
+    private String category;
+    private String area;
+    private String instructions;
+    private String thumbnailLink;
+    private String tags;
+    private String youtubeLink;
     private List<String> ingredients;
     private List<String> measurements;
-    private String strSource;
+    private String source;
 
     // CONSTRUCTORS
     public MealModel() {
     }
-
-    public MealModel(String idMeal, String strMeal, String strCategory, String strArea, String strInstructions,
-            String strMealThumb, String strTags, String strYoutube, List<String> ingredients, List<String> measurements,
-            String strSource) {
-        this.idMeal = idMeal;
-        this.strMeal = strMeal;
-        this.strCategory = strCategory;
-        this.strArea = strArea;
-        this.strInstructions = strInstructions;
-        this.strMealThumb = strMealThumb;
-        this.strTags = strTags;
-        this.strYoutube = strYoutube;
+    
+    public MealModel(String id, String name, String category, String area, String instructions, String thumbnailLink,
+            String tags, String youtubeLink, List<String> ingredients, List<String> measurements, String source) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.area = area;
+        this.instructions = instructions;
+        this.thumbnailLink = thumbnailLink;
+        this.tags = tags;
+        this.youtubeLink = youtubeLink;
         this.ingredients = ingredients;
         this.measurements = measurements;
-        this.strSource = strSource;
+        this.source = source;
     }
 
-    // GETTERS SETTERS
-    public String getIdMeal() {
-        return idMeal;
+    public String getId() {
+        return id;
     }
 
-    public void setIdMeal(String idMeal) {
-        this.idMeal = idMeal;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getStrMeal() {
-        return strMeal;
+    public String getName() {
+        return name;
     }
 
-    public void setStrMeal(String strMeal) {
-        this.strMeal = strMeal;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getStrCategory() {
-        return strCategory;
+    public String getCategory() {
+        return category;
     }
 
-    public void setStrCategory(String strCategory) {
-        this.strCategory = strCategory;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public String getStrArea() {
-        return strArea;
+    public String getArea() {
+        return area;
     }
 
-    public void setStrArea(String strArea) {
-        this.strArea = strArea;
+    public void setArea(String area) {
+        this.area = area;
     }
 
-    public String getStrInstructions() {
-        return strInstructions;
+    public String getInstructions() {
+        return instructions;
     }
 
-    public void setStrInstructions(String strInstructions) {
-        this.strInstructions = strInstructions;
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
     }
 
-    public String getStrMealThumb() {
-        return strMealThumb;
+    public String getThumbnailLink() {
+        return thumbnailLink;
     }
 
-    public void setStrMealThumb(String strMealThumb) {
-        this.strMealThumb = strMealThumb;
+    public void setThumbnailLink(String thumbnailLink) {
+        this.thumbnailLink = thumbnailLink;
     }
 
-    public String getStrTags() {
-        return strTags;
+    public String getTags() {
+        return tags;
     }
 
-    public void setStrTags(String strTags) {
-        this.strTags = strTags;
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
-    public String getStrYoutube() {
-        return strYoutube;
+    public String getYoutubeLink() {
+        return youtubeLink;
     }
 
-    public void setStrYoutube(String strYoutube) {
-        this.strYoutube = strYoutube;
+    public void setYoutubeLink(String youtubeLink) {
+        this.youtubeLink = youtubeLink;
     }
 
     public List<String> getIngredients() {
@@ -117,12 +115,15 @@ public class MealModel
         this.measurements = measurements;
     }
 
-    public String getStrSource() {
-        return strSource;
+    public String getSource() {
+        return source;
     }
 
-    public void setStrSource(String strSource) {
-        this.strSource = strSource;
-    }   
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+
+    
 
 }
