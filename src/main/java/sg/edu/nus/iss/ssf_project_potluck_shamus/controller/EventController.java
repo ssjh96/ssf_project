@@ -15,8 +15,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import sg.edu.nus.iss.ssf_project_potluck_shamus.model.CategoryModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.model.EventModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.model.MealModel;
+import sg.edu.nus.iss.ssf_project_potluck_shamus.service.CategoryService;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.service.EventService;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.service.MealService;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.service.UserService;
@@ -48,6 +50,9 @@ public class EventController
 
     @Autowired
     private MealService mealService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     // HOME PAGE
     @GetMapping("/home")
@@ -235,12 +240,32 @@ public class EventController
 
 
 
-    @GetMapping("/test")
+
+
+    // TEST API CALL
+    @GetMapping("/test_c") // http://localhost:3000/events/test_c?c=seafood
     @ResponseBody
-    public List<MealModel> testMealsByCategory(@RequestParam ("category") String category) {
-        return mealService.getMealsByCategory(category);
+    public List<MealModel> testByCategory(@RequestParam ("c") String category) {
+        return mealService.filterByCategory(category);
     }
     
-    
+    @GetMapping("/test_i") // http://localhost:3000/events/test_i?i=chicken
+    @ResponseBody
+    public List<MealModel> testByIngredient(@RequestParam ("i") String ingredient) {
+        return mealService.filterByIngredient(ingredient);
+    }
+
+    @GetMapping("/test_a") // http://localhost:3000/events/test_a?a=canadian
+    @ResponseBody
+    public List<MealModel> testByArea(@RequestParam ("a") String area) {
+        return mealService.filterByArea(area);
+    }
+
+    @GetMapping("/test_ac") // http://localhost:3000/events/test_ac
+    @ResponseBody
+    public List<CategoryModel> getAllCategories() 
+    {
+        return categoryService.fetchCategories();
+    }
     
 }
