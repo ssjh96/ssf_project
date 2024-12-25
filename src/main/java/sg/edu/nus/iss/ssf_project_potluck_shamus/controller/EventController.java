@@ -16,7 +16,9 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import sg.edu.nus.iss.ssf_project_potluck_shamus.model.EventModel;
+import sg.edu.nus.iss.ssf_project_potluck_shamus.model.MealModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.service.EventService;
+import sg.edu.nus.iss.ssf_project_potluck_shamus.service.MealService;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.service.UserService;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.util.InviteStatus;
 
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 
@@ -42,6 +45,9 @@ public class EventController
 
     @Autowired 
     private UserService userService;
+
+    @Autowired
+    private MealService mealService;
 
     // HOME PAGE
     @GetMapping("/home")
@@ -226,6 +232,15 @@ public class EventController
 
         return "addcontribution";
     }
+
+
+
+    @GetMapping("/test")
+    @ResponseBody
+    public List<MealModel> testMealsByCategory(@RequestParam ("category") String category) {
+        return mealService.getMealsByCategory(category);
+    }
+    
     
     
 }

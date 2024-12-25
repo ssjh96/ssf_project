@@ -123,9 +123,6 @@ public class MealModel
 
     public void setStrSource(String strSource) {
         this.strSource = strSource;
-    }
-
-    
-    
+    }   
 
 }
