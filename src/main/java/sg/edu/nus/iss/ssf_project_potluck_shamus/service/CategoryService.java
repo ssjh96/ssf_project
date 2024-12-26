@@ -46,7 +46,7 @@ public class CategoryService {
             JsonObject jCategory = categoriesArray.getJsonObject(i);
 
             category.setId(jCategory.getString("idCategory", ""));
-            category.setCategory(jCategory.getString("strCategory", ""));
+            category.setName(jCategory.getString("strCategory", ""));
             category.setThumbnailLink(jCategory.getString("strCategoryThumb", ""));
             category.setDescription(jCategory.getString("strCategoryDescription", ""));
 

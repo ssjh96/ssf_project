@@ -110,7 +110,7 @@ public class MealService {
         return meals;
     }
 
-    public List<MealModel> getById(String mealId)
+    public MealModel getById(String mealId)
     {
         System.out.println("Getting by ID...");
         System.out.println("Base is >>> " + Url.mealApiBaseUrl);
@@ -122,10 +122,10 @@ public class MealService {
 
         List<MealModel> meals = fetchMeals(url);
 
-        return meals;
+        return meals.get(0);
     }
 
-    public List<MealModel> getRandomMeal()
+    public MealModel getRandomMeal()
     {
         System.out.println("Getting 1 random meal...");
         System.out.println("Base is >>> " + Url.mealApiBaseUrl);
@@ -136,7 +136,7 @@ public class MealService {
 
         List<MealModel> meals = fetchMeals(url);
 
-        return meals;
+        return meals.get(0);
     }
 
 

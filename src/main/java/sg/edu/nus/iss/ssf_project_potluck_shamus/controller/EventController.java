@@ -224,22 +224,57 @@ public class EventController
 
     // /events/add?eventId=12345 ?key=value
     @GetMapping("/addcontribution")
-    public String addContributions(@AuthenticationPrincipal UserDetails userDetails,
-                                    @RequestParam("eventId") String eventId, 
-                                    Model model) throws ParseException 
+    public String showContributionsForm(@AuthenticationPrincipal UserDetails userDetails,
+                                        @RequestParam("eventId") String eventId, 
+                                        Model model) throws ParseException 
     {
         String username = userDetails.getUsername();
         EventModel event = eventService.getEvent(eventId);
 
         model.addAttribute("username", username);
         model.addAttribute("event", event);
-        
+        model.addAttribute("categories", categoryService.fetchCategories());
 
         return "addcontribution";
     }
 
 
+    @PostMapping("/addcontribution")
+    public String postContributionsForm(@AuthenticationPrincipal UserDetails userDetails,
+                                        @RequestParam ("eventId") String eventId,
+                                        @RequestParam ("mealId") String mealId) throws ParseException 
+    {
+        String username = userDetails.getUsername();
+        EventModel event = eventService.getEvent(eventId);
+        Map<String, String> contributions = event.getContributions();
 
+        MealModel meal = mealService.getById(mealId);
+        contributions.put(username, meal.getName());
+        eventService.createEvent(event);
+
+        return "redirect:/events/view?eventId=" + eventId;
+    }
+    
+
+    @GetMapping("/browsecategory")
+    public String browseCategory(@AuthenticationPrincipal UserDetails userDetails,
+                                @RequestParam ("eventId") String eventId,
+                                @RequestParam ("category") String category,
+                                Model model) throws ParseException
+    {
+        String username = userDetails.getUsername();
+        EventModel event = eventService.getEvent(eventId);
+        List<MealModel> meals = mealService.filterByCategory(category);
+
+        System.out.println("the meals are: " + meals);
+
+        model.addAttribute("username", username);
+        model.addAttribute("event", event);
+        model.addAttribute("meals", meals);
+
+        return "browsecategory";
+    }
+    
 
 
     // TEST API CALL

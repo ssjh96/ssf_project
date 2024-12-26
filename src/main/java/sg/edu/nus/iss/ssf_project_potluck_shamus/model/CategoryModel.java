@@ -3,7 +3,7 @@ package sg.edu.nus.iss.ssf_project_potluck_shamus.model;
 public class CategoryModel 
 {
     private String id;
-    private String category;
+    private String name;
     private String thumbnailLink;
     private String description;
 
@@ -11,9 +11,9 @@ public class CategoryModel
     public CategoryModel() {
     }
 
-    public CategoryModel(String id, String category, String thumbnailLink, String description) {
+    public CategoryModel(String id, String name, String thumbnailLink, String description) {
         this.id = id;
-        this.category = category;
+        this.name = name;
         this.thumbnailLink = thumbnailLink;
         this.description = description;
     }
@@ -27,12 +27,12 @@ public class CategoryModel
         this.id = id;
     }
 
-    public String getCategory() {
-        return category;
+    public String getName() {
+        return name;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getThumbnailLink() {

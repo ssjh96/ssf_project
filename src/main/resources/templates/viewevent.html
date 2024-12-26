@@ -12,7 +12,7 @@
         <h1>Event Details</h1>
         <br>
         <div>
-            <p>Title: <span th:text="${event.title}"></span></p>
+            <p>Event: <span th:text="${event.title}"></span></p>
             <p>Date: <span th:text="${#dates.format(event.date, 'yyyy-MM-dd')}"></span></p>
             <p>Location: <span th:text="${event.location}"></span></p>
             <p>Host: <span th:text="${event.host}"></span></p>
