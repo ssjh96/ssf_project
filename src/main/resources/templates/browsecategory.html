@@ -23,9 +23,6 @@
         <div class="row">
             <div th:each="meal : ${meals}" class = "col-3 ms-0 mb-3">
                 <div class="card" style="width: 18rem;">
-                    <!-- <p>Meal Name: <span th:text="${meal.name}"></span></p>
-                    <p>Thumbnail Link: <span th:text="${meal.thumbnailLink}"></span></p>
-                    <p>YouTube Link: <span th:text="${meal.youtubeLink}"></span></p> -->
 
                     <img th:src="${meal.thumbnailLink}" class="card-img-top" alt="Meal Image">
                     <div class="card-body">

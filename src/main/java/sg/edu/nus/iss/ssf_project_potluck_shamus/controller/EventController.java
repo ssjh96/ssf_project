@@ -221,6 +221,22 @@ public class EventController
         return "viewevent";
     }
 
+    @GetMapping("/viewrecipe")
+    public String viewRecipe(@RequestParam("eventId") String eventId,
+                            @RequestParam("mealName") String mealName, 
+                            Model model) 
+    {
+        System.out.println("mealname is >>>" + mealName);
+
+        List<MealModel> meals = mealService.getByName(mealName);
+        MealModel meal = meals.get(0);
+
+        String mealId = meal.getId();
+        
+
+        return "redirect:/events/mealdetails?eventId=" + eventId + "&mealId=" + mealId;
+    }
+
     // /events/add?eventId=12345 ?key=value
     @GetMapping("/selectcategory")
     public String showContributionsForm(@AuthenticationPrincipal UserDetails userDetails,
@@ -229,6 +245,23 @@ public class EventController
     {
         String username = userDetails.getUsername();
         EventModel event = eventService.getEvent(eventId);
+
+
+        // Check user accepted invite before viewing suggestions
+        InviteStatus inviteStatus = event.getInviteStatus().get(username);
+        
+        if (inviteStatus != InviteStatus.ACCEPTED)
+        {
+            model.addAttribute("username", username);
+            model.addAttribute("event", event);
+
+            Map<String, String> pContributions = eventService.getParticipatingContributions(eventId);
+            model.addAttribute("pContributions", pContributions);
+
+            model.addAttribute("errorMsg", "Please accept the invitation from home page first.");
+            return "viewevent";
+        }
+
 
         model.addAttribute("username", username);
         model.addAttribute("event", event);
@@ -291,6 +324,9 @@ public class EventController
 
         return "redirect:/events/view?eventId=" + eventId;
     }  
+
+    
+    
     
 
 
