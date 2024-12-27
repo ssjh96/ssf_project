@@ -159,51 +159,50 @@ public class MealService {
     }
     
 
-    // NOT IN USE
-    // public List<MealModel> getByFirstLetter(String firstLetter)
-    // {
-    //     System.out.println("Getting by ID...");
-    //     System.out.println("Base is >>> " + Url.mealApiBaseUrl);
-    //     System.out.println("API Key is >>> " + apiKey);
-    //     System.out.println("Name is >>> " + firstLetter);
 
-    //     String url = String.format("%s/%s/search.php?f=%s", Url.mealApiBaseUrl, apiKey, firstLetter);
-    //     System.out.println(url);
+    public List<MealModel> filterByFirstLetter(String firstLetter)
+    {
+        System.out.println("Getting by ID...");
+        System.out.println("Base is >>> " + Url.mealApiBaseUrl);
+        System.out.println("API Key is >>> " + apiKey);
+        System.out.println("Name is >>> " + firstLetter);
 
-    //     List<MealModel> meals = fetchMeals(url);
+        String url = String.format("%s/%s/search.php?f=%s", Url.mealApiBaseUrl, apiKey, firstLetter);
+        System.out.println(url);
 
-    //     return meals;
-    // }
+        List<MealModel> meals = fetchMeals(url);
 
-    // NOT IN USE
-    // public List<MealModel> filterByIngredient(String ingredient)
-    // {
-    //     System.out.println("Getting by category...");
-    //     System.out.println("Base is >>> " + Url.mealApiBaseUrl);
-    //     System.out.println("API Key is >>> " + apiKey);
-    //     System.out.println("Ingredient is >>> " + ingredient);
+        return meals;
+    }
+
+    public List<MealModel> filterByIngredient(String ingredient)
+    {
+        System.out.println("Getting by category...");
+        System.out.println("Base is >>> " + Url.mealApiBaseUrl);
+        System.out.println("API Key is >>> " + apiKey);
+        System.out.println("Ingredient is >>> " + ingredient);
                 
-    //     String url = String.format("%s/%s/filter.php?i=%s", Url.mealApiBaseUrl, apiKey, ingredient);
-    //     System.out.println(url);
+        String url = String.format("%s/%s/filter.php?i=%s", Url.mealApiBaseUrl, apiKey, ingredient);
+        System.out.println(url);
 
-    //     List<MealModel> meals = fetchMeals(url);
+        List<MealModel> meals = fetchMeals(url);
 
-    //     return meals;
-    // }
+        return meals;
+    }
 
-    // public List<MealModel> filterByArea(String area)
-    // {
-    //     System.out.println("Getting by category...");
-    //     System.out.println("Base is >>> " + Url.mealApiBaseUrl);
-    //     System.out.println("API Key is >>> " + apiKey);
-    //     System.out.println("Area is >>> " + area);
+    public List<MealModel> filterByArea(String area)
+    {
+        System.out.println("Getting by category...");
+        System.out.println("Base is >>> " + Url.mealApiBaseUrl);
+        System.out.println("API Key is >>> " + apiKey);
+        System.out.println("Area is >>> " + area);
                 
-    //     String url = String.format("%s/%s/filter.php?a=%s", Url.mealApiBaseUrl, apiKey, area);
-    //     System.out.println(url);
+        String url = String.format("%s/%s/filter.php?a=%s", Url.mealApiBaseUrl, apiKey, area);
+        System.out.println(url);
 
-    //     List<MealModel> meals = fetchMeals(url);
+        List<MealModel> meals = fetchMeals(url);
 
-    //     return meals;
-    // }
+        return meals;
+    }
 
 }

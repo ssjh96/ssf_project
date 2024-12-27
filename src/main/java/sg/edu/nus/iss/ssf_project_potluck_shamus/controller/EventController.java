@@ -15,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import sg.edu.nus.iss.ssf_project_potluck_shamus.model.CategoryModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.model.EventModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.model.MealModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.service.CategoryService;
@@ -27,15 +26,9 @@ import sg.edu.nus.iss.ssf_project_potluck_shamus.util.InviteStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-
-
 
 @Controller
 @RequestMapping("/events")
@@ -222,11 +215,26 @@ public class EventController
     }
 
     @GetMapping("/viewrecipe")
-    public String viewRecipe(@RequestParam("eventId") String eventId,
+    public String viewRecipe(@AuthenticationPrincipal UserDetails userDetails,
+                            @RequestParam("eventId") String eventId,
                             @RequestParam("mealName") String mealName, 
-                            Model model) 
+                            Model model) throws ParseException 
     {
-        System.out.println("mealname is >>>" + mealName);
+        String username = userDetails.getUsername();
+        EventModel event = eventService.getEvent(eventId);
+
+        if (mealName.equals("No contribution yet"))
+        {
+            model.addAttribute("errorMsg", "A contribution has not been added.");
+
+            model.addAttribute("username", username);
+            model.addAttribute("event", event);
+
+            Map<String, String> pContributions = eventService.getParticipatingContributions(eventId);
+            model.addAttribute("pContributions", pContributions);
+
+            return "viewevent";
+        }
 
         List<MealModel> meals = mealService.getByName(mealName);
         MealModel meal = meals.get(0);
@@ -252,13 +260,14 @@ public class EventController
         
         if (inviteStatus != InviteStatus.ACCEPTED)
         {
+            model.addAttribute("errorMsg", "Please accept the invitation from home page first.");
+
             model.addAttribute("username", username);
             model.addAttribute("event", event);
 
             Map<String, String> pContributions = eventService.getParticipatingContributions(eventId);
             model.addAttribute("pContributions", pContributions);
 
-            model.addAttribute("errorMsg", "Please accept the invitation from home page first.");
             return "viewevent";
         }
 
@@ -268,7 +277,24 @@ public class EventController
         model.addAttribute("categories", categoryService.fetchCategories());
 
         return "selectcategory";
-    }    
+    }
+    
+    @GetMapping("/viewapi")
+    public String viewApiData(@RequestParam("eventId") String eventId, 
+                            Model model) throws ParseException 
+    {
+        EventModel event = eventService.getEvent(eventId);
+
+        
+        // List<String> letters = new ArrayList<>(Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", 
+        //                                                             "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"));
+
+        model.addAttribute("event", event);
+        model.addAttribute("categories", categoryService.fetchCategories());
+        // model.addAttribute("letters", letters);
+
+        return "viewapi";
+    }
 
     @GetMapping("/browsecategory") 
     public String browseCategory(@AuthenticationPrincipal UserDetails userDetails,
@@ -309,7 +335,7 @@ public class EventController
         return "mealdetails";
     }
 
-    @PostMapping("/addsuggestion") // add suggestions from API
+    @PostMapping("/addsuggestion") 
     public String addSuggestion(@AuthenticationPrincipal UserDetails userDetails,
                                 @RequestParam ("eventId") String eventId,
                                 @RequestParam ("mealId") String mealId) throws ParseException 
@@ -323,38 +349,6 @@ public class EventController
         eventService.createEvent(event);
 
         return "redirect:/events/view?eventId=" + eventId;
-    }  
+    }      
 
-    
-    
-    
-
-
-    // TEST API CALL
-    @GetMapping("/test_c") // http://localhost:3000/events/test_c?c=seafood
-    @ResponseBody
-    public List<MealModel> testByCategory(@RequestParam ("c") String category) {
-        return mealService.filterByCategory(category);
-    }
-
-    @GetMapping("/test_ac") // http://localhost:3000/events/test_ac
-    @ResponseBody
-    public List<CategoryModel> getAllCategories() 
-    {
-        return categoryService.fetchCategories();
-    }
-    
-    // NOT IN USE
-    // @GetMapping("/test_i") // http://localhost:3000/events/test_i?i=chicken
-    // @ResponseBody
-    // public List<MealModel> testByIngredient(@RequestParam ("i") String ingredient) {
-    //     return mealService.filterByIngredient(ingredient);
-    // }
-
-    // NOT IN USE
-    // @GetMapping("/test_a") // http://localhost:3000/events/test_a?a=canadian
-    // @ResponseBody
-    // public List<MealModel> testByArea(@RequestParam ("a") String area) {
-    //     return mealService.filterByArea(area);
-    // }
 }

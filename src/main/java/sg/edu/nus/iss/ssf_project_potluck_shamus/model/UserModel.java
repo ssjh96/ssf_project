@@ -98,5 +98,4 @@ public class UserModel {
         this.role = role;
     }
 
-    
 }

@@ -65,17 +65,6 @@ public class RedisConfig {
     public RedisTemplate<String, String> redisObjectTemplate01() {
         RedisTemplate<String, String> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new StringRedisSerializer());
-
-        return template;
-    }
-
-    // Defines a RedisTemplate bean for interacting with Redis
-    @Bean(Constant.template02)
-    public RedisTemplate<String, String> redisObjectTemplate02() {
-        RedisTemplate<String, String> template = new RedisTemplate<>();
-        template.setConnectionFactory(jedisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer()); // map has key
         template.setHashKeySerializer(new StringRedisSerializer()); // map has hashkey
         template.setHashValueSerializer(new StringRedisSerializer()); // map has hashvalue

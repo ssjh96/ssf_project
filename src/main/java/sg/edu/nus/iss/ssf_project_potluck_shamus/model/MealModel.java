@@ -123,7 +123,4 @@ public class MealModel
         this.source = source;
     }
 
-
-    
-
 }

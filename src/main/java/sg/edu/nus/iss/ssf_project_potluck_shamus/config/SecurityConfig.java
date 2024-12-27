@@ -52,22 +52,11 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean // Spring should use the custom instead of predefined
+    @Bean
     public UserDetailsService userDetailsService()
     {
         return new CustomUserDetailsService();
     }
-    
-    // @Bean 
-    // public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception
-    // {
-    //     AuthenticationManagerBuilder amb = http.getSharedObject(AuthenticationManagerBuilder.class);
-    //     // Get authentication manager builder to build with (1) customUserDetailsService, & (2) BCryptPasswordEncoder
-    //     amb.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder()); 
-        
-        
-    //     return amb.build();
-    // }
 
     @Bean
 	public AuthenticationManager authenticationManager() {

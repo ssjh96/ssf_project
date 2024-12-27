@@ -16,7 +16,7 @@ import sg.edu.nus.iss.ssf_project_potluck_shamus.constant.Constant;
 public class MapRepo {
 
     @Autowired
-    @Qualifier(Constant.template02)
+    @Qualifier(Constant.template01)
     RedisTemplate<String, String> redisTemplate;
 
     // HSET - Add a key-value pair to Redis hash 
