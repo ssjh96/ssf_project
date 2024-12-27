@@ -43,9 +43,6 @@ public class CustomUserDetailsService implements UserDetailsService{
             .roles(currentUser.getRole())
             .build();
 
-        
-        // // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'loadUserByUsername'");
     }
     
 }

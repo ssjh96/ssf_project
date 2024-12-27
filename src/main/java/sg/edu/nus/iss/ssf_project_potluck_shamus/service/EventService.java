@@ -2,7 +2,6 @@ package sg.edu.nus.iss.ssf_project_potluck_shamus.service;
 
 import java.io.StringReader;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -206,26 +205,7 @@ public class EventService
         return eventsParticipating;
     }
 
-    // NOT IN USE
-    // Get all participants that accepted the invite 
-    public List<String> getAcceptedParticipants(String eventId) throws ParseException
-    {
-        String fieldKey = redisKey + ":" + eventId;
-        EventModel event = deserialiseEvent(mapRepo.get(redisKey, fieldKey).toString());
-
-        Map<String, InviteStatus> allInvited = event.getInviteStatus();
-        List<String> acceptedParticipants = new ArrayList<>();
-
-        for (Entry<String, InviteStatus> entry : allInvited.entrySet())
-        {  
-            if(entry.getValue().equals(InviteStatus.ACCEPTED))
-            {
-                acceptedParticipants.add(entry.getKey());
-            }
-        }
-
-        return acceptedParticipants;
-    }
+    
 
 
     // Get all contributions from accepted participants
@@ -277,21 +257,6 @@ public class EventService
     }
 
 
-    // NOT IN USE
-    public void sendInvite(String eventId, String invitee) throws ParseException
-    {
-        // EventModel event = getEvent(eventId);
-
-        String fieldKey = redisKey + ":" + eventId;
-        EventModel event = deserialiseEvent(mapRepo.get(redisKey, fieldKey).toString());
-
-        event.getInviteStatus().put(invitee, InviteStatus.PENDING);
-        event.getParticipants().add(invitee);
-
-        mapRepo.put(redisKey, fieldKey, serialiseEvent(event));
-    }
-
-
 
     public void acceptInvite(String eventId, String username) throws ParseException
     {
@@ -315,6 +280,43 @@ public class EventService
         mapRepo.put(redisKey, fieldKey, serialiseEvent(event));
     }
 
+
+
+
     
+    // NOT IN USE
+    // Get all participants that accepted the invite 
+    // public List<String> getAcceptedParticipants(String eventId) throws ParseException
+    // {
+    //     String fieldKey = redisKey + ":" + eventId;
+    //     EventModel event = deserialiseEvent(mapRepo.get(redisKey, fieldKey).toString());
+
+    //     Map<String, InviteStatus> allInvited = event.getInviteStatus();
+    //     List<String> acceptedParticipants = new ArrayList<>();
+
+    //     for (Entry<String, InviteStatus> entry : allInvited.entrySet())
+    //     {  
+    //         if(entry.getValue().equals(InviteStatus.ACCEPTED))
+    //         {
+    //             acceptedParticipants.add(entry.getKey());
+    //         }
+    //     }
+
+    //     return acceptedParticipants;
+    // }
+
+    // NOT IN USE
+    // public void sendInvite(String eventId, String invitee) throws ParseException
+    // {
+    //     // EventModel event = getEvent(eventId);
+
+    //     String fieldKey = redisKey + ":" + eventId;
+    //     EventModel event = deserialiseEvent(mapRepo.get(redisKey, fieldKey).toString());
+
+    //     event.getInviteStatus().put(invitee, InviteStatus.PENDING);
+    //     event.getParticipants().add(invitee);
+
+    //     mapRepo.put(redisKey, fieldKey, serialiseEvent(event));
+    // }
 
 }

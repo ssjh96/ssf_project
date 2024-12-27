@@ -40,12 +40,14 @@
             </tbody>
         </table>
 
-        <form method="post" th:action="@{/events/addcontribution}">
+        <form method="post" th:action="@{/events/addsuggestion}">
             <input type="hidden" name="eventId" th:value="${event.id}">
             <input type="hidden" name="mealId" th:value="${meal.id}">
             <button type="submit" class="btn btn-primary">Add as Contribution</button>
 
-            <a th:href="@{/events/browsecategory(eventId=${event.id}, category=${meal.category})}" class="btn btn-primary">Back to Browse</a>
+            <a th:href="@{/events/browsecategory(eventId=${event.id}, category=${meal.category})}" class="btn btn-danger">Back</a>
+            <a class="btn btn-secondary"style="float:right; margin-right:12px;" th:href="@{/events/home}">Back to Home</a>
+        <a class="btn btn-secondary" style="float:right; margin-right:12px;" th:href="@{/events/view(eventId=${event.id})}">Back to Event</a>
         </form>
 
         

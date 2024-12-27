@@ -26,7 +26,6 @@ import sg.edu.nus.iss.ssf_project_potluck_shamus.util.InviteStatus;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -236,25 +235,7 @@ public class EventController
         model.addAttribute("categories", categoryService.fetchCategories());
 
         return "selectcategory";
-    }
-
-
-    @PostMapping("/addcontribution")
-    public String postContributionsForm(@AuthenticationPrincipal UserDetails userDetails,
-                                        @RequestParam ("eventId") String eventId,
-                                        @RequestParam ("mealId") String mealId) throws ParseException 
-    {
-        String username = userDetails.getUsername();
-        EventModel event = eventService.getEvent(eventId);
-        Map<String, String> contributions = event.getContributions();
-
-        MealModel meal = mealService.getById(mealId);
-        contributions.put(username, meal.getName());
-        eventService.createEvent(event);
-
-        return "redirect:/events/view?eventId=" + eventId;
-    }
-    
+    }    
 
     @GetMapping("/browsecategory") 
     public String browseCategory(@AuthenticationPrincipal UserDetails userDetails,
@@ -269,12 +250,13 @@ public class EventController
         model.addAttribute("username", username);
         model.addAttribute("event", event);
         model.addAttribute("meals", meals);
+        model.addAttribute("category", category);
 
         return "browsecategory";
     }
     
-    @GetMapping("/mealdetail")
-    public String getMethodName(@AuthenticationPrincipal UserDetails userDetails,
+    @GetMapping("/mealdetails")
+    public String showMealDetails(@AuthenticationPrincipal UserDetails userDetails,
                                 @RequestParam ("eventId") String eventId,
                                 @RequestParam ("mealId") String mealId,
                                 Model model) throws ParseException 
@@ -285,12 +267,30 @@ public class EventController
 
         System.out.println("Meals consist: " + meal);
 
+        if (meal == null)
+
         model.addAttribute("username", username);
         model.addAttribute("event", event);
         model.addAttribute("meal", meal);
 
-        return "mealdetail";
+        return "mealdetails";
     }
+
+    @PostMapping("/addsuggestion") // add suggestions from API
+    public String addSuggestion(@AuthenticationPrincipal UserDetails userDetails,
+                                @RequestParam ("eventId") String eventId,
+                                @RequestParam ("mealId") String mealId) throws ParseException 
+    {
+        String username = userDetails.getUsername();
+        EventModel event = eventService.getEvent(eventId);
+        Map<String, String> contributions = event.getContributions();
+
+        MealModel meal = mealService.getById(mealId);
+        contributions.put(username, meal.getName());
+        eventService.createEvent(event);
+
+        return "redirect:/events/view?eventId=" + eventId;
+    }  
     
 
 
@@ -300,18 +300,6 @@ public class EventController
     public List<MealModel> testByCategory(@RequestParam ("c") String category) {
         return mealService.filterByCategory(category);
     }
-    
-    @GetMapping("/test_i") // http://localhost:3000/events/test_i?i=chicken
-    @ResponseBody
-    public List<MealModel> testByIngredient(@RequestParam ("i") String ingredient) {
-        return mealService.filterByIngredient(ingredient);
-    }
-
-    @GetMapping("/test_a") // http://localhost:3000/events/test_a?a=canadian
-    @ResponseBody
-    public List<MealModel> testByArea(@RequestParam ("a") String area) {
-        return mealService.filterByArea(area);
-    }
 
     @GetMapping("/test_ac") // http://localhost:3000/events/test_ac
     @ResponseBody
@@ -320,4 +308,17 @@ public class EventController
         return categoryService.fetchCategories();
     }
     
+    // NOT IN USE
+    // @GetMapping("/test_i") // http://localhost:3000/events/test_i?i=chicken
+    // @ResponseBody
+    // public List<MealModel> testByIngredient(@RequestParam ("i") String ingredient) {
+    //     return mealService.filterByIngredient(ingredient);
+    // }
+
+    // NOT IN USE
+    // @GetMapping("/test_a") // http://localhost:3000/events/test_a?a=canadian
+    // @ResponseBody
+    // public List<MealModel> testByArea(@RequestParam ("a") String area) {
+    //     return mealService.filterByArea(area);
+    // }
 }
