@@ -20,7 +20,7 @@ public class EventModel {
     private String id;
     private String host;
     private List<String> participants;
-    private Map<String, String> contributions;
+    private Map<String, String> contributions; // User : "No contribution yet"
     private Map<String, InviteStatus> inviteStatus; // User : PENDING/ACCEPTED/REJECTED
     
     // Validated Attributes

@@ -68,12 +68,15 @@
                 </td>
 
                 <td>
-                    <form method="get" th:action="@{/events/view}">
+                    <!-- <form method="get" th:action="@{/events/view}">
                         <input type="hidden" name="eventId" th:value="${event.id}">
                         <button type="submit" class="btn btn-primary">View</button>
-                    </form>
+                    </form> -->
+
+                    
 
                     <form method="post" th:action="@{/events/delete}">
+                        <a class="btn btn-primary" th:href="@{/events/view(eventId=${event.id})}">View</a>
                         <input type="hidden" name="eventId" th:value="${event.id}">
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>

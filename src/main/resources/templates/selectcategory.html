@@ -15,9 +15,10 @@
         <p>Date: <span th:text="${#dates.format(event.date, 'yyyy-MM-dd')}"></span></p>
         <p>Location: <span th:text="${event.location}"></span></p>
         <p>Host: <span th:text="${event.host}"></span></p>
-        <br>
+        <p>Current User: <span th:text="${username}"></span></p>
+        <hr>
         
-        <h1>Add your contributions <span th:text="${username}"></span>!</h1>
+        <h3>View Meal Suggestions by Category</h3>
 
         <form method="get" th:action="@{/events/browsecategory}">
 
@@ -31,8 +32,8 @@
                             th:text="${category.name}"></option>
                 </select>
             </div>
-
-            <button type="submit" class="btn btn-primary">View Meals</button>
+            
+            <button type="submit" class="btn btn-primary">View Suggestions</button>
         </form>
     </div>
     

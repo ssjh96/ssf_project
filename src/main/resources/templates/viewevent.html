@@ -16,11 +16,12 @@
             <p>Date: <span th:text="${#dates.format(event.date, 'yyyy-MM-dd')}"></span></p>
             <p>Location: <span th:text="${event.location}"></span></p>
             <p>Host: <span th:text="${event.host}"></span></p>
+            <p>Current User: <span th:text="${username}"></span></p>
         </div>
 
         <hr>
 
-        <h2>Contributions</h2>
+        <h3>Contributions</h3>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -38,15 +39,11 @@
                 </tr>
             </tbody>
         </table>
+        
+        <!-- /events/add?eventId=12345 -->
+        <a class="btn btn-primary" th:href="@{/events/selectcategory(eventId=${event.id})}">Add/Update</a>
+        <a class="btn btn-danger" th:href="@{/events/home}">Back</a>
 
-        <p>Currently logged in as: <span th:text="${username}"></span></p>
-         <!-- /events/add?eventId=12345 -->
-        <form method="get" th:action="@{/events/addcontribution}">
-            <input type="hidden" name="eventId" th:value="${event.id}">
-            <button type="submit" class="btn btn-primary">Add/Update</button>
-
-            <a class = "btn btn-danger" th:href="@{/events/home}">Back</a>
-        </form>
 
     </div>
     

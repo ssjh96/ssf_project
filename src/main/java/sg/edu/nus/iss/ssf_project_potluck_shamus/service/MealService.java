@@ -153,8 +153,24 @@ public class MealService {
 
         List<MealModel> meals = fetchMeals(url);
 
+        for (MealModel meal : meals)
+        {
+            System.out.println("id is >>> " + meal.getId());
+            System.out.println("name is >>> " + meal.getName());
+            System.out.println("Category is >>> " + meal.getCategory());
+            System.out.println("Area is >>> " + meal.getArea());
+            System.out.println("Instructions are >>> " + meal.getInstructions());
+            System.out.println("thumbnail is >>> " + meal.getThumbnailLink());
+            System.out.println("Tags are >>> " + meal.getTags());
+            System.out.println("Youtube is >>> " + meal.getYoutubeLink());
+
+            System.out.println("ingredients are >>> " + meal.getIngredients());
+            System.out.println("measurements are >>> " + meal.getMeasurements());
+        }
+
         return meals;
     }
+    
 
     public List<MealModel> filterByIngredient(String ingredient)
     {

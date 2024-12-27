@@ -223,7 +223,7 @@ public class EventController
     }
 
     // /events/add?eventId=12345 ?key=value
-    @GetMapping("/addcontribution")
+    @GetMapping("/selectcategory")
     public String showContributionsForm(@AuthenticationPrincipal UserDetails userDetails,
                                         @RequestParam("eventId") String eventId, 
                                         Model model) throws ParseException 
@@ -235,7 +235,7 @@ public class EventController
         model.addAttribute("event", event);
         model.addAttribute("categories", categoryService.fetchCategories());
 
-        return "addcontribution";
+        return "selectcategory";
     }
 
 
@@ -256,7 +256,7 @@ public class EventController
     }
     
 
-    @GetMapping("/browsecategory")
+    @GetMapping("/browsecategory") 
     public String browseCategory(@AuthenticationPrincipal UserDetails userDetails,
                                 @RequestParam ("eventId") String eventId,
                                 @RequestParam ("category") String category,
@@ -266,13 +266,30 @@ public class EventController
         EventModel event = eventService.getEvent(eventId);
         List<MealModel> meals = mealService.filterByCategory(category);
 
-        System.out.println("the meals are: " + meals);
-
         model.addAttribute("username", username);
         model.addAttribute("event", event);
         model.addAttribute("meals", meals);
 
         return "browsecategory";
+    }
+    
+    @GetMapping("/mealdetail")
+    public String getMethodName(@AuthenticationPrincipal UserDetails userDetails,
+                                @RequestParam ("eventId") String eventId,
+                                @RequestParam ("mealId") String mealId,
+                                Model model) throws ParseException 
+    {
+        String username = userDetails.getUsername();
+        EventModel event = eventService.getEvent(eventId);
+        MealModel meal = mealService.getById(mealId);
+
+        System.out.println("Meals consist: " + meal);
+
+        model.addAttribute("username", username);
+        model.addAttribute("event", event);
+        model.addAttribute("meal", meal);
+
+        return "mealdetail";
     }
     
 

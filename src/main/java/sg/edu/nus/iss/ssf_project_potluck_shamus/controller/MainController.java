@@ -18,28 +18,4 @@ public class MainController
     public String displayMainPage() {
         return "main";
     }
-
-    @GetMapping("/home")
-    public String success(Model model, @AuthenticationPrincipal UserDetails userDetails) 
-    {
-        String username = userDetails.getUsername();
-        model.addAttribute("username", username);
-        
-        return "home";
-    }
-
-    // e.g. On roles
-    // @GetMapping("/delete/{title}")
-    // @PreAuthorize("hasRole('ADMIN')")
-    // public String delete(@PathVariable String title) {
-    //     someService.delete('title');
-    //     return "redirect:/somepage"
-    // }
-    // 
-    // html: <td sec:authorize="hasRole('ADMIN')"><button><a th:href="xxx"
-    // spring security extra?
-    
-    
-    
-
 }
