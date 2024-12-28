@@ -9,14 +9,26 @@
 </head>
 <body>
     <div class="container">
+        <br><br>
         <h1>Event Details</h1>
         <br>
-        <p>Event: <span th:text="${event.title}"></span></p>
-        <p>Date: <span th:text="${#dates.format(event.date, 'yyyy-MM-dd')}"></span></p>
-        <p>Location: <span th:text="${event.location}"></span></p>
-        <p>Host: <span th:text="${event.host}"></span></p>
-        <p>Current User: <span th:text="${username}"></span></p>
-        <hr>
+        <div>
+            <p class="fw-bold">Event: 
+                <span class="fw-normal text-decoration-underline text-capitalize" th:text="${event.title}"></span>
+            </p>
+            <p class="fw-bold">Date: 
+                <span class="fw-normal text-decoration-underline" th:text="${#dates.format(event.date, 'yyyy-MM-dd')}"></span>
+            </p>
+            <p class="fw-bold">Location: 
+                <span class="fw-normal text-decoration-underline text-capitalize" th:text="${event.location}"></span>
+            </p>
+            <p class="fw-bold">Host: 
+                <span class="fw-normal text-decoration-underline text-capitalize" th:text="${event.host}"></span>
+            </p>
+            <p class="fw-bold">Current User: 
+                <span class="fw-normal text-decoration-underline text-capitalize" th:text="${username}"></span>
+            </p>
+        </div>
         
         <h3>Meal Suggestions by Category</h3>
 
@@ -37,7 +49,6 @@
             <a class="btn btn-danger" th:href="@{/events/view(eventId=${event.id})}">Back</a>
 
             <a class="btn btn-secondary" style="float:right; margin-right:12px;" th:href="@{/events/home}">Back to Home</a>
-            <a class="btn btn-secondary" style="float:right; margin-right:12px;" th:href="@{/events/viewapi(eventId=${event.id})}">View API Data</a>
 
         </form>
         

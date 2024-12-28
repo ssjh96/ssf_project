@@ -9,80 +9,101 @@
 </head>
 
 <body>
+    <div class="container">
+        <br><br>
+        <div class="text-center">
+            <h3>Welcome to potluck event organiser <span class="text-capitalize" th:text="${username}"></span>!</h3>
+            <hr><br>
+            <p>This app is designed to help you plan and managed potluck gatherings, where each guest brings a dish to share!</p>
+            <p>Create events, send invitations, & accept/reject invites from your notifications. Enjoy a seamless potluck experience!</p>
+            <br>
 
-    <h1>Welcome, <span th:text="${username}"></span>.</h1>
-
-    <form method="post" th:action="@{/users/logout}">
-        <button class = "btn btn-danger" type="submit">Logout</button>
-    </form>
-
-    <hr>
-
-    <br>
-
-    <div th:if="${deletedMsg}" class="alert alert-success">
-        <p th:text="${deletedMsg}"></p>
-    </div>
-
-    <div th:if="${notDeletedMsg}" class="alert alert-danger">
-        <p th:text="${notDeletedMsg}"></p>
-    </div>
-    
-    <h2>Your Events</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Date</th>
-                <th>Location</th>
-                <th>Host</th>
-                <th>Participants</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-
-            <tr th:if="${events.size() == 0}">
-                <td>No records found!</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
+            <div>
+                <form method="post" th:action="@{/users/logout}">
+                    
+                    <a class="btn btn-primary" style="float:center" th:href="@{/events/create}" >Create Event</a>
+                    <button class = "btn btn-danger" style="float:center" type="submit">Logout</button>
+                    
+                </form>
+            </div>
             
-            <tr th:each="event : ${events}">
+            <br><hr>
+            
+            <p>Interested in the API data for food suggestions? 
+                <a th:href="@{/events/viewapi}">Click here.</a>
+            </p>
 
-                <td th:text="${event.title}"></td>
-                <td th:text="${#dates.format(event.date, 'yyyy-MM-dd')}"></td>
-                <td th:text="${event.location}"></td>
-                <td th:text="${event.host}"></td>
+            <hr>
 
-                <td>
-                    <ul>
-                        <!-- Loop  thru inviteStatus, <participant, inviteStatus>-->
-                        <li th:each="entry : ${event.inviteStatus}">
-                            <span th:text="${entry.key}"></span> -
-                            <span th:text="${entry.value}"></span>
-                        </li>
-                    </ul>
-                </td>
+        </div>
 
-                <td>
-                    <form method="post" th:action="@{/events/delete}">
-                        <a class="btn btn-primary" th:href="@{/events/view(eventId=${event.id})}">View</a>
-                        <input type="hidden" name="eventId" th:value="${event.id}">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </td>
+        <br>
 
-            </tr>
-        </tbody>
-    </table>
+        <br>
 
-    <br> 
+        <div th:if="${deletedMsg}" class="alert alert-success">
+            <p th:text="${deletedMsg}"></p>
+        </div>
 
-    <h2>Notifications</h2>
+        <div th:if="${notDeletedMsg}" class="alert alert-danger">
+            <p th:text="${notDeletedMsg}"></p>
+        </div>
+    
+        <h2>Your Events</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Host</th>
+                    <th>Participants</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr th:if="${events.size() == 0}">
+                    <td>No records found!</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+            
+                <tr th:each="event : ${events}">
+
+                    <td th:text="${event.title}"></td>
+                    <td th:text="${#dates.format(event.date, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${event.location}"></td>
+                    <td th:text="${event.host}"></td>
+
+                    <td>
+                        <ul>
+                            <!-- Loop  thru inviteStatus, <participant, inviteStatus>-->
+                            <li th:each="entry : ${event.inviteStatus}">
+                                <span th:text="${entry.key}"></span> -
+                                <span th:text="${entry.value}"></span>
+                            </li>
+                        </ul>
+                    </td>
+
+                    <td>
+                        <form method="post" th:action="@{/events/delete}">
+                            <a class="btn btn-primary" th:href="@{/events/view(eventId=${event.id})}">View</a>
+                            <input type="hidden" name="eventId" th:value="${event.id}">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+
+        <br> 
+
+        <h2>Notifications</h2>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -99,7 +120,7 @@
                 </tr>
 
                 <tr th:each="pendingEvent : ${pendingEvents}">
-                   
+                
                     <td>You're invited to <span th:text="${pendingEvent.title}"></span>.</span></td>
                     
                     <td>
@@ -117,11 +138,9 @@
                 </tr>
             </tbody>
         </table>
-       
 
-        <div>
-            <a class="btn btn-primary" style="float:right; margin-right:100px;" th:href="@{/events/create}" >Create Event</a>
-        </div>
+    </div>
+    
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>

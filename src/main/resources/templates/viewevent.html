@@ -9,14 +9,25 @@
 </head>
 <body>
     <div class = "container">
+        <br><br>
         <h1>Event Details</h1>
         <br>
         <div>
-            <p>Event: <span th:text="${event.title}"></span></p>
-            <p>Date: <span th:text="${#dates.format(event.date, 'yyyy-MM-dd')}"></span></p>
-            <p>Location: <span th:text="${event.location}"></span></p>
-            <p>Host: <span th:text="${event.host}"></span></p>
-            <p>Current User: <span th:text="${username}"></span></p>
+            <p class="fw-bold">Event: 
+                <span class="fw-normal text-decoration-underline text-capitalize" th:text="${event.title}"></span>
+            </p>
+            <p class="fw-bold">Date: 
+                <span class="fw-normal text-decoration-underline" th:text="${#dates.format(event.date, 'yyyy-MM-dd')}"></span>
+            </p>
+            <p class="fw-bold">Location: 
+                <span class="fw-normal text-decoration-underline text-capitalize" th:text="${event.location}"></span>
+            </p>
+            <p class="fw-bold">Host: 
+                <span class="fw-normal text-decoration-underline text-capitalize" th:text="${event.host}"></span>
+            </p>
+            <p class="fw-bold">Current User: 
+                <span class="fw-normal text-decoration-underline text-capitalize" th:text="${username}"></span>
+            </p>
         </div>
 
         <hr>
@@ -35,7 +46,7 @@
                 
                 <tr th:each="entry, state : ${pContributions}">
                     <td th:text="${state.index + 1}"></td>
-                    <td th:text="${entry.key}"></td>
+                    <td class="text-capitalize" th:text="${entry.key}"></td>
                     <td th:text="${entry.value}"></td>
 
                     <td>
@@ -51,8 +62,8 @@
         </div>
         
         <!-- /events/add?eventId=12345 -->
-        <a class="btn btn-danger" style="float:right; margin-right:12px;" th:href="@{/events/home}">Back</a>
-        <a class="btn btn-primary" style="float:right; margin-right:12px;" th:href="@{/events/selectcategory(eventId=${event.id})}">View Suggestions</a>
+        <a class="btn btn-danger" style="float:right; margin-right:12px; height:2.5rem" th:href="@{/events/home}">Back</a>
+        <a class="btn btn-primary badge bg-primary text-wrap" style="float:right; margin-right:12px; width: 8rem; height:2.5rem" th:href="@{/events/selectcategory(eventId=${event.id})}">View Contribution Suggestions</a>
         <br><br>
 
     </div>
