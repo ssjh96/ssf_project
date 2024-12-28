@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import sg.edu.nus.iss.ssf_project_potluck_shamus.model.EventModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.model.MealModel;
+import sg.edu.nus.iss.ssf_project_potluck_shamus.model.UserModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.service.CategoryService;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.service.EventService;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.service.MealService;
@@ -55,10 +56,21 @@ public class EventController
     {
         String username = userDetails.getUsername();
         model.addAttribute("username", username);
+        
+        UserModel user = userService.findUser(username);
 
-        // Get all events user is participating in
-        List<EventModel> events = eventService.getParticipatingEvents(username);
-        model.addAttribute("events", events);
+        if (user.getRole().equals("ADMIN"))
+        {
+            List<EventModel> events = eventService.getAllEvents();
+            model.addAttribute("events", events);
+        }
+        else
+        {
+            // Get all events user is participating in
+            List<EventModel> events = eventService.getParticipatingEvents(username);
+            model.addAttribute("events", events);
+        }
+        
 
         // Get all pending invitations sent to user
         List<EventModel> pendingEvents = eventService.getPendingInvites(username);
@@ -71,7 +83,7 @@ public class EventController
 
         if (notDeleted != null)
         {
-            model.addAttribute("notDeletedMsg", "Error, only the host can delete the event.");
+            model.addAttribute("notDeletedMsg", "Error, only the host or admin can delete the event.");
         }
 
         return"home";

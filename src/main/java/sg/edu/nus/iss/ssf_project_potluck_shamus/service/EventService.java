@@ -22,6 +22,7 @@ import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.constant.Constant;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.model.EventModel;
+import sg.edu.nus.iss.ssf_project_potluck_shamus.model.UserModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.repository.MapRepo;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.util.InviteStatus;
 
@@ -30,6 +31,9 @@ public class EventService
 {
     @Autowired
     private MapRepo mapRepo;
+
+    @Autowired
+    private UserService userService;
 
     String redisKey = Constant.eventsKey;
 
@@ -161,8 +165,9 @@ public class EventService
     {
         String fieldKey = redisKey + ":" + eventId;
         EventModel event = deserialiseEvent(mapRepo.get(redisKey, fieldKey).toString());
+        UserModel user = userService.findUser(username);
 
-        if (event.getHost().equals(username))
+        if (event.getHost().equals(username) || user.getRole().equals("ADMIN"))
         {
             mapRepo.deleteEvent(redisKey, fieldKey);
 
@@ -203,6 +208,24 @@ public class EventService
         }
 
         return eventsParticipating;
+    }
+
+    public List<EventModel> getAllEvents() throws ParseException
+    {
+        // Retrieve from redis db all events {"events:xyz" : "stringified event json"}
+        Map<Object, Object> allEvents = mapRepo.getAll(redisKey);
+
+        List<EventModel> allEventsList = new ArrayList<>();
+
+        for (Entry<Object, Object> entry : allEvents.entrySet())
+        {
+            String eventJsonString = entry.getValue().toString();
+            EventModel event = deserialiseEvent(eventJsonString);
+
+            allEventsList.add(event);
+        }
+
+        return allEventsList;
     }
 
     
