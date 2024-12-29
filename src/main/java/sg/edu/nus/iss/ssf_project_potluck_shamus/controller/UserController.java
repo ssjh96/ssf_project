@@ -70,8 +70,6 @@ public class UserController
         {
             ObjectError error = new ObjectError("globalError", "Username is already taken, You may consider: %s".formatted(userService.suggestUsername(user)));
             bindingResult.addError(error);
-            // model.addAttribute("errorUser", "Username is already taken, You may consider: " + userService.suggestUsername(user));
-            // return "registration";
         }
 
         // if email already registered
@@ -79,8 +77,6 @@ public class UserController
         {
             ObjectError error = new ObjectError("globalError", "Email is already taken, please use another.");
             bindingResult.addError(error);
-            // model.addAttribute("errorEmail", "Email is already taken, please use another.");
-            // return "registration";
         }
 
         if (bindingResult.hasErrors())
@@ -91,14 +87,6 @@ public class UserController
         userService.register(user);
 
         return "redirect:/users/login?registered";
-    }
-
-    // @GetMapping("/test")
-    // public String test() throws ParseException {
-
-    //     userService.emailRegistered();
-    //     return "index";
-    // }
-    
+    }    
     
 }
