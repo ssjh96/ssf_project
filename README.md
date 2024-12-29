@@ -4,4 +4,5 @@
 3. Check if httpresponse is required
 4. Change requestparam to pathvariables
 5. Change invitation status 
-6. add username on create event
+6. add username on create event [DONE]
+7. logout successful?

@@ -44,8 +44,16 @@
                 <p class="text-danger" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
             </div>
 
-            <button type="submit" class="btn btn-primary">Create Event</button>
-            <a class = "btn btn-danger" th:href="@{/events/home}">Back</a>
+            <p class="fw-bold d-inline-block">Currently logged in as: 
+                <span class="fw-normal text-decoration-underline text-capitalize" th:text="${username}"></span>
+            </p>
+
+            <div style="float:right; margin-right:12px;">
+                <button type="submit" class="btn btn-primary">Create Event</button>
+                <a class = "btn btn-danger" th:href="@{/events/home}">Back</a>
+            </div>
+            
+            
         </form>
     </div>
     

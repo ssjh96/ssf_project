@@ -11,6 +11,7 @@ import sg.edu.nus.iss.ssf_project_potluck_shamus.model.MealModel;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.service.CategoryService;
 import sg.edu.nus.iss.ssf_project_potluck_shamus.service.MealService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -31,24 +32,27 @@ public class ApiRestController
         return categoryService.fetchCategories();
     }
 
-    @GetMapping("/test_c") // http://localhost:3000/api/test_c?c=seafood
-    public List<MealModel> testByCategory(@RequestParam ("c") String category) {
+    @GetMapping("/test_c/{c}") // http://localhost:3000/api/test_c?c=seafood
+    public List<MealModel> testByCategory(@PathVariable ("c") String category) {
         return mealService.filterByCategory(category);
     }
-    
-    @GetMapping("/test_i") // http://localhost:3000/api/test_i?i=chicken
-    public List<MealModel> testByIngredient(@RequestParam ("i") String ingredient) {
-        return mealService.filterByIngredient(ingredient);
-    }
 
-    @GetMapping("/test_a") // http://localhost:3000/api/test_a?a=canadian
-    public List<MealModel> testByArea(@RequestParam ("a") String area) {
-        return mealService.filterByArea(area);
-    }
-
-    @GetMapping("/test_f") // http://localhost:3000/api/test_f?f=a
-    public List<MealModel> testByLetter(@RequestParam ("f") String letter) {
+    @GetMapping("/test_f/{f}") // http://localhost:3000/api/test_f?f=a
+    public List<MealModel> testByLetter(@PathVariable ("f") String letter) {
         return mealService.filterByFirstLetter(letter);
     }
+
+
+
+    // NOT IN USE
+    // @GetMapping("/test_i/{i}") // http://localhost:3000/api/test_i?i=chicken
+    // public List<MealModel> testByIngredient(@PathVariable ("i") String ingredient) {
+    //     return mealService.filterByIngredient(ingredient);
+    // }
+
+    // @GetMapping("/test_a/{a}") // http://localhost:3000/api/test_a?a=canadian
+    // public List<MealModel> testByArea(@PathVariable ("a") String area) {
+    //     return mealService.filterByArea(area);
+    // }
     
 }

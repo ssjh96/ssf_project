@@ -18,37 +18,37 @@
         <p>View specific category: </p>
         <ul>
             <li th:each="category : ${categories}">
-                <a th:href="@{/api/test_c(c=${category.name})}" th:text="${category.name}" target="_blank"></a>
+                <a th:href="@{/api/test_c/{c}(c=${category.name})}" th:text="${category.name}" target="_blank"></a>
             </li>
         </ul>
 
         <p>View meals by first letter:
-            <a th:href="@{/api/test_f?f=a}" target="_blank">a</a>, 
-            <a th:href="@{/api/test_f?f=b}" target="_blank">b</a>, 
-            <a th:href="@{/api/test_f?f=c}" target="_blank">c</a>, 
-            <a th:href="@{/api/test_f?f=d}" target="_blank">d</a>, 
-            <a th:href="@{/api/test_f?f=e}" target="_blank">e</a>, 
-            <a th:href="@{/api/test_f?f=f}" target="_blank">f</a>, 
-            <a th:href="@{/api/test_f?f=g}" target="_blank">g</a>, 
-            <a th:href="@{/api/test_f?f=h}" target="_blank">h</a>, 
-            <a th:href="@{/api/test_f?f=i}" target="_blank">i</a>, 
-            <a th:href="@{/api/test_f?f=j}" target="_blank">j</a>, 
-            <a th:href="@{/api/test_f?f=k}" target="_blank">k</a>, 
-            <a th:href="@{/api/test_f?f=l}" target="_blank">l</a>, 
-            <a th:href="@{/api/test_f?f=m}" target="_blank">m</a>, 
-            <a th:href="@{/api/test_f?f=n}" target="_blank">n</a>, 
-            <a th:href="@{/api/test_f?f=o}" target="_blank">o</a>, 
-            <a th:href="@{/api/test_f?f=p}" target="_blank">p</a>, 
-            <a th:href="@{/api/test_f?f=q}" target="_blank">q</a>, 
-            <a th:href="@{/api/test_f?f=r}" target="_blank">r</a>, 
-            <a th:href="@{/api/test_f?f=s}" target="_blank">s</a>, 
-            <a th:href="@{/api/test_f?f=t}" target="_blank">t</a>, 
-            <a th:href="@{/api/test_f?f=u}" target="_blank">u</a>, 
-            <a th:href="@{/api/test_f?f=v}" target="_blank">v</a>, 
-            <a th:href="@{/api/test_f?f=w}" target="_blank">w</a>, 
-            <a th:href="@{/api/test_f?f=x}" target="_blank">x</a>, 
-            <a th:href="@{/api/test_f?f=y}" target="_blank">y</a>, 
-            <a th:href="@{/api/test_f?f=z}" target="_blank">z</a>
+            <a th:href="@{/api/test_f/{f}(f=a)}" target="_blank">a</a>, 
+            <a th:href="@{/api/test_f/{f}(f=b)}" target="_blank">b</a>, 
+            <a th:href="@{/api/test_f/{f}(f=c)}" target="_blank">c</a>, 
+            <a th:href="@{/api/test_f/{f}(f=d)}" target="_blank">d</a>, 
+            <a th:href="@{/api/test_f/{f}(f=e)}" target="_blank">e</a>, 
+            <a th:href="@{/api/test_f/{f}(f=f)}" target="_blank">f</a>, 
+            <a th:href="@{/api/test_f/{f}(f=g)}" target="_blank">g</a>, 
+            <a th:href="@{/api/test_f/{f}(f=h)}" target="_blank">h</a>, 
+            <a th:href="@{/api/test_f/{f}(f=i)}" target="_blank">i</a>, 
+            <a th:href="@{/api/test_f/{f}(f=j)}" target="_blank">j</a>, 
+            <a th:href="@{/api/test_f/{f}(f=k)}" target="_blank">k</a>, 
+            <a th:href="@{/api/test_f/{f}(f=l)}" target="_blank">l</a>, 
+            <a th:href="@{/api/test_f/{f}(f=m)}" target="_blank">m</a>, 
+            <a th:href="@{/api/test_f/{f}(f=n)}" target="_blank">n</a>, 
+            <a th:href="@{/api/test_f/{f}(f=o)}" target="_blank">o</a>, 
+            <a th:href="@{/api/test_f/{f}(f=p)}" target="_blank">p</a>, 
+            <a th:href="@{/api/test_f/{f}(f=q)}" target="_blank">q</a>, 
+            <a th:href="@{/api/test_f/{f}(f=r)}" target="_blank">r</a>, 
+            <a th:href="@{/api/test_f/{f}(f=s)}" target="_blank">s</a>, 
+            <a th:href="@{/api/test_f/{f}(f=t)}" target="_blank">t</a>, 
+            <a th:href="@{/api/test_f/{f}(f=u)}" target="_blank">u</a>, 
+            <a th:href="@{/api/test_f/{f}(f=v)}" target="_blank">v</a>, 
+            <a th:href="@{/api/test_f/{f}(f=w)}" target="_blank">w</a>, 
+            <a th:href="@{/api/test_f/{f}(f=x)}" target="_blank">x</a>, 
+            <a th:href="@{/api/test_f/{f}(f=y)}" target="_blank">y</a>, 
+            <a th:href="@{/api/test_f/{f}(f=z)}" target="_blank">z</a>
         </p>
         
 

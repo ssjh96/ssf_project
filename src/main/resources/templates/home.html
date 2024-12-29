@@ -41,13 +41,14 @@
 
         <br>
 
-        <div th:if="${deletedMsg}" class="alert alert-success">
-            <p th:text="${deletedMsg}"></p>
+        <div th:if="${message}" class="alert alert-success">
+            <p th:text="${message}"></p>
         </div>
 
         <div th:if="${notDeletedMsg}" class="alert alert-danger">
             <p th:text="${notDeletedMsg}"></p>
         </div>
+
     
         <h2>Your Events</h2>
         <table class="table table-striped">
@@ -91,7 +92,7 @@
 
                     <td>
                         <form method="post" th:action="@{/events/delete}">
-                            <a class="btn btn-primary" th:href="@{/events/view(eventId=${event.id})}">View</a>
+                            <a class="btn btn-primary" th:href="@{/events/view/{eventId}(eventId=${event.id})}">View</a>
                             <input type="hidden" name="eventId" th:value="${event.id}">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>

@@ -26,6 +26,7 @@ import sg.edu.nus.iss.ssf_project_potluck_shamus.util.InviteStatus;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.validation.Valid;
 
@@ -47,11 +48,18 @@ public class EventController
     @Autowired
     private CategoryService categoryService;
 
+
+
     // HOME PAGE
+    // 1. Show home page: (a) Events, (b) Notifications, (c) Messages, 
+    // (d) Methods on same page: (i) Delete, (ii) Accept, (iii) Reject
     @GetMapping("/home")
     public String showHomePage(@AuthenticationPrincipal UserDetails userDetails, 
                                 @RequestParam (value = "deleted", required = false) String deleted,
                                 @RequestParam (value = "notDeleted", required = false) String notDeleted,
+                                @RequestParam (value = "created", required = false) String created,
+                                @RequestParam (value = "accepted", required = false) String accepted,
+                                @RequestParam (value = "rejected", required = false) String rejected,
                                 Model model) throws ParseException 
     {
         String username = userDetails.getUsername();
@@ -59,14 +67,14 @@ public class EventController
         
         UserModel user = userService.findUser(username);
 
+        // If user is ADMIN, get all events
         if (user.getRole().equals("ADMIN"))
         {
             List<EventModel> events = eventService.getAllEvents();
             model.addAttribute("events", events);
         }
-        else
+        else // Else user is USER, get only participating events
         {
-            // Get all events user is participating in
             List<EventModel> events = eventService.getParticipatingEvents(username);
             model.addAttribute("events", events);
         }
@@ -76,9 +84,11 @@ public class EventController
         List<EventModel> pendingEvents = eventService.getPendingInvites(username);
         model.addAttribute("pendingEvents", pendingEvents);
 
+
+        // Endpoint checks to display messages
         if (deleted != null)
         {
-            model.addAttribute("deletedMsg", "Event successfully deleted.");
+            model.addAttribute("message", "Event successfully deleted.");
         }
 
         if (notDeleted != null)
@@ -86,13 +96,33 @@ public class EventController
             model.addAttribute("notDeletedMsg", "Error, only the host or admin can delete the event.");
         }
 
+        if (created != null)
+        {
+            model.addAttribute("message", "Event succesfully created.");
+        }
+
+        if (accepted != null)
+        {
+            model.addAttribute("message", "Event accepted succesfully.");
+        }
+
+        if (rejected != null)
+        {
+            model.addAttribute("message", "Event rejected succesfully.");
+        }
+
+
         return"home";
     }
     
+    
     // CREATE PAGE
     @GetMapping("/create")
-    public String showCreateForm(Model model) 
+    public String showCreateForm(@AuthenticationPrincipal UserDetails userDetails,
+                                Model model) 
     {
+        String username = userDetails.getUsername();
+        model.addAttribute("username", username);
         model.addAttribute("event", new EventModel());
         return "createform";
     }
@@ -111,9 +141,10 @@ public class EventController
         Map<String, InviteStatus> inviteStatus = new HashMap<>();
         
 
+        // Validation checks
         if (bindingResult.hasErrors())
         {
-            return "createform"; // Return creation form with errors
+            return "createform"; 
         }
 
         // Set user who created event as host
@@ -134,15 +165,16 @@ public class EventController
             {
                 participant = participant.trim();
 
+                // Check that user is not trying to add themself to participants list
                 if(participant.equals(host))
                 {
                     ObjectError error = new ObjectError("globalError", "Cannot add yourself: %s".formatted(host));
                     bindingResult.addError(error);
 
-                    // invalidUsers.add(host);
                     return "createform";
                 }
 
+                // Check that the participant user is trying to add exist in Redis DB
                 if (userService.findUser(participant)!= null)
                 {
                     participantsList.add(participant);
@@ -150,7 +182,7 @@ public class EventController
                     inviteStatus.put(participant, InviteStatus.PENDING);
                 }
 
-                else
+                else // Else add participant as invalid user
                 {
                     invalidUsers.add(participant);
                 }
@@ -172,14 +204,16 @@ public class EventController
 
         eventService.createEvent(event);
         
-        return "redirect:/events/home";
+        return "redirect:/events/home?created";
     }
-    
+
+
     @PostMapping("/delete")
     public String deleteEvent(@AuthenticationPrincipal UserDetails userDetails, 
                                 @RequestParam("eventId") String eventId) throws ParseException 
     {
         String username = userDetails.getUsername();
+        
         if (!eventService.deleteEvent(eventId, username))
         {
             return "redirect:/events/home?notDeleted";
@@ -196,9 +230,10 @@ public class EventController
         String username = userDetails.getUsername();
         eventService.acceptInvite(eventId, username);
 
-        return "redirect:/events/home";
+        return "redirect:/events/home?accepted";
     }
     
+
     @PostMapping("/reject")
     public String rejectInvite(@AuthenticationPrincipal UserDetails userDetails,
                                 @RequestParam("eventId") String eventId) throws ParseException 
@@ -206,12 +241,24 @@ public class EventController
         String username = userDetails.getUsername();
         eventService.rejectInvite(eventId, username);
 
-        return "redirect:/events/home";
+        return "redirect:/events/home?rejected";
     }
 
-    @GetMapping("/view")
+
+    // API PAGE
+    @GetMapping("/viewapi")
+    public String viewApiData(Model model) throws ParseException 
+    {       
+        model.addAttribute("categories", categoryService.fetchCategories());
+
+        return "viewapi";
+    }
+    
+
+    // EVENT PAGE
+    @GetMapping("/view/{eventId}")
     public String viewEvent(@AuthenticationPrincipal UserDetails userDetails,
-                            @RequestParam ("eventId") String eventId,
+                            @PathVariable ("eventId") String eventId,
                             Model model) throws ParseException 
     {
         String username = userDetails.getUsername();
@@ -226,41 +273,11 @@ public class EventController
         return "viewevent";
     }
 
-    @GetMapping("/viewrecipe")
-    public String viewRecipe(@AuthenticationPrincipal UserDetails userDetails,
-                            @RequestParam("eventId") String eventId,
-                            @RequestParam("mealName") String mealName, 
-                            Model model) throws ParseException 
-    {
-        String username = userDetails.getUsername();
-        EventModel event = eventService.getEvent(eventId);
-
-        if (mealName.equals("No contribution yet"))
-        {
-            model.addAttribute("errorMsg", "A contribution has not been added.");
-
-            model.addAttribute("username", username);
-            model.addAttribute("event", event);
-
-            Map<String, String> pContributions = eventService.getParticipatingContributions(eventId);
-            model.addAttribute("pContributions", pContributions);
-
-            return "viewevent";
-        }
-
-        List<MealModel> meals = mealService.getByName(mealName);
-        MealModel meal = meals.get(0);
-
-        String mealId = meal.getId();
-        
-
-        return "redirect:/events/mealdetails?eventId=" + eventId + "&mealId=" + mealId;
-    }
-
-    // /events/add?eventId=12345 ?key=value
-    @GetMapping("/selectcategory")
+    
+    // SELECT CATEGORY PAGE
+    @GetMapping("/selectcategory/{eventId}")
     public String showContributionsForm(@AuthenticationPrincipal UserDetails userDetails,
-                                        @RequestParam("eventId") String eventId, 
+                                        @PathVariable("eventId") String eventId, 
                                         Model model) throws ParseException 
     {
         String username = userDetails.getUsername();
@@ -290,18 +307,12 @@ public class EventController
 
         return "selectcategory";
     }
-    
-    @GetMapping("/viewapi")
-    public String viewApiData(Model model) throws ParseException 
-    {       
-        model.addAttribute("categories", categoryService.fetchCategories());
 
-        return "viewapi";
-    }
 
-    @GetMapping("/browsecategory") 
+    // BROWSE CATEGORY PAGE
+    @GetMapping("/browsecategory/{eventId}") 
     public String browseCategory(@AuthenticationPrincipal UserDetails userDetails,
-                                @RequestParam ("eventId") String eventId,
+                                @PathVariable ("eventId") String eventId,
                                 @RequestParam ("category") String category,
                                 Model model) throws ParseException
     {
@@ -311,15 +322,16 @@ public class EventController
 
         model.addAttribute("username", username);
         model.addAttribute("event", event);
-        model.addAttribute("meals", meals);
         model.addAttribute("category", category);
+        model.addAttribute("meals", meals);
 
         return "browsecategory";
     }
     
-    @GetMapping("/mealdetails")
+    @GetMapping("/mealdetails/{eventId}")
     public String showMealDetails(@AuthenticationPrincipal UserDetails userDetails,
-                                @RequestParam ("eventId") String eventId,
+                                @PathVariable ("eventId") String eventId,
+                                @RequestParam ("category") String category,
                                 @RequestParam ("mealId") String mealId,
                                 Model model) throws ParseException 
     {
@@ -333,6 +345,7 @@ public class EventController
 
         model.addAttribute("username", username);
         model.addAttribute("event", event);
+        model.addAttribute("category", category);
         model.addAttribute("meal", meal);
 
         return "mealdetails";
@@ -351,7 +364,40 @@ public class EventController
         contributions.put(username, meal.getName());
         eventService.createEvent(event);
 
-        return "redirect:/events/view?eventId=" + eventId;
+        return "redirect:/events/view/" + eventId;
     }      
+
+
+    @GetMapping("/viewrecipe/{eventId}")
+    public String viewRecipe(@AuthenticationPrincipal UserDetails userDetails,
+                            @PathVariable("eventId") String eventId,
+                            @RequestParam("mealName") String mealName,
+                            Model model) throws ParseException 
+    {
+        String username = userDetails.getUsername();
+        EventModel event = eventService.getEvent(eventId);
+
+        if (mealName.equals("No contribution yet"))
+        {
+            model.addAttribute("errorMsg", "A contribution has not been added.");
+
+            model.addAttribute("username", username);
+            model.addAttribute("event", event);
+
+            Map<String, String> pContributions = eventService.getParticipatingContributions(eventId);
+            model.addAttribute("pContributions", pContributions);
+
+            return "viewevent";
+        }
+
+        List<MealModel> meals = mealService.getByName(mealName);
+        MealModel meal = meals.get(0);
+
+        String mealId = meal.getId();
+        String category = meal.getCategory();
+        
+
+        return "redirect:/events/mealdetails/" + eventId + "?category=" + category + "&mealId=" + mealId;
+    }
 
 }

@@ -50,7 +50,12 @@
                     <td th:text="${entry.value}"></td>
 
                     <td>
-                        <a class="btn btn-secondary" th:href="@{/events/viewrecipe(eventId=${event.id}, mealName=${entry.value})}">View Recipe</a>
+                        <form method="get" th:action="@{/events/viewrecipe/{eventId}(eventId=${event.id})}">
+                            <input type="hidden" name="mealName" th:value="${entry.value}" />
+                            
+                            <button type="submit" class="btn btn-secondary">View Recipe</button>
+                        </form>
+                        <!-- <a class="btn btn-secondary" th:href="@{/events/viewrecipe(eventId=${event.id}, mealName=${entry.value})}">View Recipe</a> -->
                     </td>
 
                 </tr>
@@ -61,9 +66,9 @@
             <p th:text="${errorMsg}"></p>
         </div>
         
-        <!-- /events/add?eventId=12345 -->
         <a class="btn btn-danger" style="float:right; margin-right:12px; height:2.5rem" th:href="@{/events/home}">Back</a>
-        <a class="btn btn-primary badge bg-primary text-wrap" style="float:right; margin-right:12px; width: 8rem; height:2.5rem" th:href="@{/events/selectcategory(eventId=${event.id})}">View Contribution Suggestions</a>
+
+        <a class="btn btn-primary badge bg-primary text-wrap" style="float:right; margin-right:12px; width: 8rem; height:2.5rem" th:href="@{/events/selectcategory/{eventId}(eventId=${event.id})}">View Contribution Suggestions</a>
         <br><br>
 
     </div>
