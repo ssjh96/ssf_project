@@ -23,7 +23,7 @@ public class SecurityConfig {
         // Customisation
         // For each request, if the requests is "/" or any url after /users/, leave unauthorised by using permitAll()
         // for main page and 
-        http.authorizeHttpRequests(request -> request.requestMatchers("/","/users/**")
+        http.authorizeHttpRequests(request -> request.requestMatchers("/","/users/**","/images/**")
         .permitAll()
         
 
